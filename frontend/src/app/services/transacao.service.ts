@@ -16,7 +16,7 @@ export interface Transacao {
   providedIn: 'root'
 })
 export class TransacaoService {
-  private apiUrl = 'http://localhost:8000/transacoes/';
+  private apiUrl = 'https://financas-app-niso.onrender.com/transacoes/';
   private http = inject(HttpClient); // Injeta o módulo HTTP
 
   // Busca a lista de transações no Back-end
