@@ -1,0 +1,31 @@
+# Ambientes Virtuais (Python)
+backend/venv/
+venv/
+env/
+
+# Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Arquivos de ambiente e credenciais (AQUI VAI A SENHA DO POSTGRES)
+.env
+*.env
+.env.*
+
+# Chaves e Certificados (Para a futura API do Inter)
+backend/certs/
+*.key
+*.crt
+*.pem
+
+# Backups e Dumps de Banco de Dados (PostgreSQL)
+*.sql
+*.dump
+*.bak
+pgdata/
+db_data/
+
+# VS Code / IDEs
+.vscode/
+.idea/
