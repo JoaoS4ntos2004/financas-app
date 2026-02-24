@@ -27,6 +27,7 @@ class Transacao(Base):
     descricao = Column(String, index=True)
     valor = Column(Float)
     tipo = Column(String) # 'receita' ou 'despesa'
+    categoria = Column(String, default="Outros")
     data_transacao = Column(DateTime, default=datetime.utcnow)
     consolidado = Column(Boolean, default=False)
 
@@ -38,6 +39,7 @@ class TransacaoCreate(BaseModel):
     descricao: str
     valor: float
     tipo: str
+    categoria: str = "Outros"
 
 # O que vamos devolver para o Front-end
 class TransacaoResponse(TransacaoCreate):
@@ -106,6 +108,45 @@ def deletar_transacao(transacao_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"mensagem": "Transação apagada com sucesso!"}
 
+def classificar_categoria(descricao: str, valor: float, tipo: str) -> str:
+    desc = descricao.upper() 
+    
+    # --- 1. TRANSFERÊNCIAS E INVESTIMENTOS ---
+    if any(p in desc for p in ["CDB", "APLICACAO", "RESGATE", "PORQUINHO"]):
+        return "Investimentos"
+    if "FATURA" in desc:
+        return "Cartão de Crédito"
+    if any(p in desc for p in ["CERES FUNDACAO", "JOAO PEDRO FERNANDES SANT"]):
+        return "Salário/Renda"
+        
+    # --- 2. CONTAS FIXAS E SAÚDE ---
+    if any(p in desc for p in ["TIM S A", "CLARO", "VIVO", "NEOENERGIA", "CAESB", "CONVENIO DETRAN"]):
+        return "Contas/Telefonia/Impostos"
+    if any(p in desc for p in ["DROG", "FARMACIA"]):
+        return "Farmácia/Saúde"
+
+    # --- 3. CONSUMO E LAZER ---
+    if "UBER" in desc or "99APP" in desc:
+        return "Transporte/App"
+    if any(p in desc for p in ["POSTO", "CASCOL", "COMBUSTIVEIS", "QUALITY"]):
+        return "Combustível"
+    if any(p in desc for p in ["MENDES", "BEER", "BAR", "DISTRIBUIDORA", "KOMBI", "TOINZINHO", "VILLA SIG", "CHAPOU", "RAIP"]):
+        return "Cerveja/Rolê"
+    if any(p in desc for p in ["DIRIJO", "TABACARIA"]):
+        return "Tabaco"
+    if any(p in desc for p in ["BIG BOX", "SUPERMERCADO", "PADARIA", "TERRA ALIMENTACAO", "REDE AQUI", "UNIAO"]):
+        return "Mercado/Padaria"
+    if any(p in desc for p in ["IFOOD", "IFD", "PIZZA", "CREPERIA", "SUSHILOKO", "GIRAFFAS", "BISTRO", "RESTAURANTE", "ALIMENTACAO", "SABOR"]):
+        return "Restaurante/Delivery"
+    if any(p in desc for p in ["CENTAURO", "AMERICANAS", "CACHOS", "LAVANDERIA"]):
+        return "Compras/Variedades"
+    
+    # --- 4. REGRA DE FALLBACK ---
+    if tipo == "receita":
+        return "Salário/Renda" if valor > 50 else "Reembolso"
+    else:
+        return "Pix/Transferência" if valor > 100 else "Consumo Diversos"
+
 @app.post("/transacoes/importar/")
 async def importar_extrato(file: UploadFile = File(...), db: Session = Depends(get_db)):
     # 1. Extração (Extract): Lê o arquivo enviado
@@ -134,6 +175,9 @@ async def importar_extrato(file: UploadFile = File(...), db: Session = Depends(g
                 tipo = "receita" if valor_float >= 0 else "despesa"
                 valor_absoluto = abs(valor_float)
                 
+                # --- CHAMA A NOSSA INTELIGÊNCIA AQUI ---
+                categoria_calculada = classificar_categoria(descricao, valor_absoluto, tipo)
+                
                 # Converte a data (ex: 24/02/2026 para formato do banco)
                 data_obj = datetime.strptime(data_str, "%d/%m/%Y")
                 
@@ -142,6 +186,7 @@ async def importar_extrato(file: UploadFile = File(...), db: Session = Depends(g
                     descricao=descricao,
                     valor=valor_absoluto,
                     tipo=tipo,
+                    categoria=categoria_calculada, # <-- SALVA A CATEGORIA NO BANCO AQUI
                     data_transacao=data_obj
                 )
                 db.add(nova_transacao)
