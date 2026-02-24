@@ -13,6 +13,15 @@ import { TransacaoService, Transacao } from './services/transacao.service';
 export class AppComponent implements OnInit {
   transacoes: Transacao[] = [];
   private transacaoService = inject(TransacaoService);
+  // Variáveis do Dashboard
+  totalReceitas: number = 0;
+  totalDespesas: number = 0;
+  saldoGeral: number = 0;
+  // Variáveis de Filtro e Paginação
+  transacoesFiltradas: any[] = []; // A lista fatiada que vai pra tela
+  ordemMaisNovas: boolean = true;  // Começa mostrando as mais recentes
+  paginaAtual: number = 1;
+  itensPorPagina: number = 15;     // Quantidade de itens por página
 
   // 3. Este objeto vai ficar "ligado" aos campos da tela
   novaTransacao: Transacao = {
@@ -29,6 +38,8 @@ export class AppComponent implements OnInit {
     this.transacaoService.getTransacoes().subscribe({
       next: (dados) => {
         this.transacoes = dados;
+        this.calcularResumo();
+        this.aplicarFiltrosEPaginacao();
       },
       error: (erro) => {
         console.error('Erro ao buscar transações:', erro);
@@ -79,6 +90,72 @@ export class AppComponent implements OnInit {
       });
     }
   }
+
+  // Aplica a ordem das datas e recorta a lista para a página atual
+  // Aplica a ordem das datas e recorta a lista para a página atual
+  aplicarFiltrosEPaginacao() {
+    // 1. Clona a lista original e ordena por data
+    let temp = [...this.transacoes];
+    
+    temp.sort((a, b) => {
+      // Se não tiver data, assume 0 para o TypeScript não reclamar
+      const dataA = a.data_transacao ? new Date(a.data_transacao).getTime() : 0;
+      const dataB = b.data_transacao ? new Date(b.data_transacao).getTime() : 0;
+      
+      return this.ordemMaisNovas ? dataB - dataA : dataA - dataB;
+    });
+
+    // 2. Fatia a lista (Paginação)
+    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
+    const fim = inicio + this.itensPorPagina;
+    this.transacoesFiltradas = temp.slice(inicio, fim);
+  }
+
+  // Funções dos botões da tela
+  mudarOrdem() {
+    this.ordemMaisNovas = !this.ordemMaisNovas;
+    this.paginaAtual = 1; // Volta pra pág 1 ao mudar a ordem
+    this.aplicarFiltrosEPaginacao();
+  }
+
+  proximaPagina() {
+    if ((this.paginaAtual * this.itensPorPagina) < this.transacoes.length) {
+      this.paginaAtual++;
+      this.aplicarFiltrosEPaginacao();
+    }
+  }
+
+  paginaAnterior() {
+    if (this.paginaAtual > 1) {
+      this.paginaAtual--;
+      this.aplicarFiltrosEPaginacao();
+    }
+  }
+
+  // Calcula o total de páginas para mostrar no HTML
+  get totalPaginas(): number {
+    return Math.ceil(this.transacoes.length / this.itensPorPagina) || 1;
+  }
+
+
+  // Calcula os totais do Dashboard
+  calcularResumo() {
+    this.totalReceitas = 0;
+    this.totalDespesas = 0;
+
+    for (let t of this.transacoes) {
+      if (t.tipo === 'receita') {
+        this.totalReceitas += t.valor;
+      } else if (t.tipo === 'despesa') {
+        this.totalDespesas += t.valor;
+      }
+    }
+    
+    // Calcula o saldo final
+    this.saldoGeral = this.totalReceitas - this.totalDespesas;
+  }
+
+
   arquivoSelecionado: File | null = null;
 
   // Pega o arquivo quando o usuário seleciona

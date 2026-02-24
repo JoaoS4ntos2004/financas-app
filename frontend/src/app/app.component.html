@@ -1,6 +1,25 @@
 <main style="font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
   <h1>Meu Controle Financeiro 💰</h1>
   
+  <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
+    
+    <div style="flex: 1; min-width: 120px; padding: 15px; border-radius: 8px; background: #e8f5e9; border: 1px solid #4caf50;">
+      <h4 style="margin: 0 0 10px 0; color: #2e7d32;">🟩 Receitas</h4>
+      <h2 style="margin: 0; color: #1b5e20;">{{ totalReceitas | currency:'BRL' }}</h2>
+    </div>
+
+    <div style="flex: 1; min-width: 120px; padding: 15px; border-radius: 8px; background: #ffebee; border: 1px solid #f44336;">
+      <h4 style="margin: 0 0 10px 0; color: #c62828;">🟥 Despesas</h4>
+      <h2 style="margin: 0; color: #b71c1c;">{{ totalDespesas | currency:'BRL' }}</h2>
+    </div>
+
+    <div style="flex: 1; min-width: 120px; padding: 15px; border-radius: 8px; background: #e3f2fd; border: 1px solid #2196f3;">
+      <h4 style="margin: 0 0 10px 0; color: #1565c0;">🟦 Saldo Atual</h4>
+      <h2 style="margin: 0; color: #0d47a1;">{{ saldoGeral | currency:'BRL' }}</h2>
+    </div>
+
+  </div>
+
   <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
     <h3 style="margin-top: 0;">Novo Lançamento</h3>
     
@@ -38,16 +57,27 @@
   </div>
 
   <div style="background: #f4f4f4; padding: 15px; border-radius: 8px;">
-    <h2 style="margin-top: 0;">Extrato de Lançamentos</h2>
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; margin-bottom: 15px;">
+      <h3 style="margin: 0;">📋 Lançamentos</h3>
+      <button (click)="mudarOrdem()" style="padding: 8px 12px; border-radius: 4px; border: 1px solid #ccc; background: white; cursor: pointer;">
+        ⏳ Ordenar por: <strong>{{ ordemMaisNovas ? 'Mais Novas' : 'Mais Antigas' }}</strong>
+      </button>
+    </div>
     
     <ul style="list-style: none; padding: 0; margin: 0;">
-      @for (t of transacoes; track t.id) {
+      @for (t of transacoesFiltradas; track t.id) {
         <li style="padding: 10px 0; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between;">
-          <span>
-            <strong>{{ t.descricao }}</strong> 
+          
+          <div>
+            <strong>{{ t.descricao }}</strong>
+            <span style="display: inline-block; margin-left: 10px; font-size: 0.75rem; background: #e0e0e0; padding: 2px 8px; border-radius: 12px; color: #424242;">
+              {{ t.categoria || 'Outros' }}
+            </span>
             <br>
-            <small style="color: gray;">{{ t.data_transacao | date:'dd/MM/yyyy HH:mm' }}</small>
-          </span>
+            <small style="color: gray;">{{ t.data_transacao | date:'dd/MM/yyyy' }}</small>
+          </div>
+          
           <div style="display: flex; align-items: center; gap: 15px;">
             <span [style.color]="t.tipo === 'receita' ? 'green' : 'red'" style="font-weight: bold;">
               {{ t.tipo === 'despesa' ? '-' : '+' }} {{ t.valor | currency:'BRL' }}
@@ -59,10 +89,28 @@
               🗑️
             </button>
           </div>
+
         </li>
       } @empty {
-        <p style="color: gray; font-style: italic;">Nenhuma transação encontrada. O banco está vazio!</p>
+        <p style="color: gray; font-style: italic; text-align: center; padding: 20px 0;">Nenhuma transação encontrada. O banco está vazio!</p>
       }
     </ul>
+
+    <div style="display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 25px; padding-bottom: 10px;">
+      <button (click)="paginaAnterior()" [disabled]="paginaAtual === 1" 
+              style="padding: 10px 15px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; background: #f9f9f9;">
+        ⬅️ Anterior
+      </button>
+      
+      <span style="font-weight: bold; color: #555;">
+        Página {{ paginaAtual }} de {{ totalPaginas }}
+      </span>
+      
+      <button (click)="proximaPagina()" [disabled]="paginaAtual === totalPaginas" 
+              style="padding: 10px 15px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; background: #f9f9f9;">
+        Próxima ➡️
+      </button>
+    </div>
+
   </div>
 </main>
