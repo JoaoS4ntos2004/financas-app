@@ -1,5 +1,5 @@
-<main style="font-family: sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">
-  <h1>Meu Controle Financeiro 💰</h1>
+<main style="font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;">
+    <h1>Meu Controle Financeiro 💰</h1>
   
   <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
     
@@ -68,16 +68,18 @@
     <ul style="list-style: none; padding: 0; margin: 0;">
       @for (t of transacoesFiltradas; track t.id) {
         
-        <li style="background: #ffffff; margin-bottom: 12px; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid;"
+        <li style="background: #ffffff; margin-bottom: 20px; padding: 20px; border-radius: 8px; border-bottom: 1px solid #e0e0e0; border-left: 5px solid; box-shadow: 0 1px 4px rgba(0,0,0,0.02);"
             [style.border-left-color]="t.tipo === 'receita' ? '#4caf50' : '#f44336'"
             style="display: flex; justify-content: space-between; align-items: center;">
           
-          <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
             
-            <strong style="font-size: 1.1rem; color: #333;">{{ t.descricao }}</strong>
+            <span style="font-size: 1.1rem; color: #333; font-weight: 500;">
+              {{ t.descricao }}
+            </span>
             
-            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-              <span style="font-size: 0.8rem; background: #f1f3f5; padding: 4px 10px; border-radius: 15px; color: #495057; font-weight: 600;">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <span style="font-size: 0.8rem; background: #f1f3f5; padding: 4px 10px; border-radius: 15px; color: #555;">
                 🏷️ {{ t.categoria || 'Outros' }}
               </span>
               <small style="color: #888; font-size: 0.85rem;">
@@ -87,9 +89,9 @@
 
           </div>
           
-          <div style="display: flex; align-items: center; gap: 15px;">
+          <div style="display: flex; align-items: center; gap: 20px;">
             
-            <span [style.color]="t.tipo === 'receita' ? '#2e7d32' : '#c62828'" style="font-weight: 800; font-size: 1.1rem;">
+            <span [style.color]="t.tipo === 'receita' ? '#2e7d32' : '#c62828'" style="font-weight: 600; font-size: 1.1rem;">
               {{ t.tipo === 'despesa' ? '-' : '+' }} {{ t.valor | currency:'BRL' }}
             </span>
             
@@ -105,7 +107,7 @@
       } @empty {
         <div style="text-align: center; padding: 30px 0; background: white; border-radius: 8px;">
           <h2 style="margin: 0; font-size: 2rem;">📭</h2>
-          <p style="color: gray; font-style: italic; margin-top: 10px;">Nenhuma transação encontrada. O banco está vazio!</p>
+          <p style="color: gray; font-style: italic; margin-top: 10px;">Nenhuma transação encontrada.</p>
         </div>
       }
     </ul>
