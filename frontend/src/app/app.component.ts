@@ -59,4 +59,24 @@ export class AppComponent implements OnInit {
       }
     });
   }
+  excluirTransacao(id?: number) {
+    if (!id) return; // Segurança extra caso o ID venha vazio
+
+    // Pede confirmação antes de apagar
+    const confirmacao = confirm('Tem certeza que deseja apagar este lançamento?');
+    
+    if (confirmacao) {
+      this.transacaoService.deletarTransacao(id).subscribe({
+        next: () => {
+          console.log(`Transação ${id} apagada com sucesso!`);
+          // Recarrega a lista para o item sumir da tela na mesma hora
+          this.carregarTransacoes();
+        },
+        error: (erro) => {
+          console.error('Erro ao excluir:', erro);
+          alert('Erro ao excluir a transação do banco de dados.');
+        }
+      });
+    }
+  }
 }

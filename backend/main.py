@@ -88,3 +88,17 @@ def criar_transacao(transacao: TransacaoCreate, db: Session = Depends(get_db)):
 def listar_transacoes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     transacoes = db.query(Transacao).offset(skip).limit(limit).all()
     return transacoes
+
+@app.delete("/transacoes/{transacao_id}")
+def deletar_transacao(transacao_id: int, db: Session = Depends(get_db)):
+    # 1. Busca a transação no banco pelo ID
+    transacao = db.query(Transacao).filter(Transacao.id == transacao_id).first()
+    
+    # 2. Se não existir, retorna erro 404
+    if not transacao:
+        raise HTTPException(status_code=404, detail="Transação não encontrada")
+    
+    # 3. Se existir, deleta e salva a alteração
+    db.delete(transacao)
+    db.commit()
+    return {"mensagem": "Transação apagada com sucesso!"}

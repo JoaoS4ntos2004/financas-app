@@ -37,9 +37,17 @@
             <br>
             <small style="color: gray;">{{ t.data_transacao | date:'dd/MM/yyyy HH:mm' }}</small>
           </span>
-          <span [style.color]="t.tipo === 'receita' ? 'green' : 'red'" style="font-weight: bold;">
-            {{ t.tipo === 'despesa' ? '-' : '+' }} {{ t.valor | currency:'BRL' }}
-          </span>
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <span [style.color]="t.tipo === 'receita' ? 'green' : 'red'" style="font-weight: bold;">
+              {{ t.tipo === 'despesa' ? '-' : '+' }} {{ t.valor | currency:'BRL' }}
+            </span>
+            
+            <button (click)="excluirTransacao(t.id)" 
+                    style="background: transparent; border: none; cursor: pointer; font-size: 1.2rem;" 
+                    title="Apagar">
+              🗑️
+            </button>
+          </div>
         </li>
       } @empty {
         <p style="color: gray; font-style: italic;">Nenhuma transação encontrada. O banco está vazio!</p>

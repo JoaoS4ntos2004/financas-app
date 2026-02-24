@@ -28,4 +28,9 @@ export class TransacaoService {
   criarTransacao(transacao: Transacao): Observable<Transacao> {
     return this.http.post<Transacao>(this.apiUrl, transacao);
   }
+
+  deletarTransacao(id: number): Observable<any> {
+    // A URL vai ficar algo como: https://sua-api.onrender.com/transacoes/5
+    return this.http.delete(`${this.apiUrl}${id}`);
+  }
 }
