@@ -33,4 +33,11 @@ export class TransacaoService {
     // A URL vai ficar algo como: https://sua-api.onrender.com/transacoes/5
     return this.http.delete(`${this.apiUrl}${id}`);
   }
+
+  importarExtratoCSV(arquivo: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', arquivo); // 'file' é o nome exato que o Python está esperando
+    
+    return this.http.post(`${this.apiUrl}importar/`, formData);
+  }
 }

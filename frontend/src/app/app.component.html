@@ -26,6 +26,17 @@
     </div>
   </div>
 
+  <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #2196f3;">
+    <h3 style="margin-top: 0; color: #0d47a1;">📥 Importar Extrato (CSV)</h3>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <input type="file" accept=".csv" (change)="onFileSelected($event)" style="flex: 1;">
+      <button (click)="importarArquivo()" [disabled]="!arquivoSelecionado"
+              style="padding: 8px 15px; background: #0d47a1; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+        Importar Dados
+      </button>
+    </div>
+  </div>
+
   <div style="background: #f4f4f4; padding: 15px; border-radius: 8px;">
     <h2 style="margin-top: 0;">Extrato de Lançamentos</h2>
     

@@ -79,4 +79,33 @@ export class AppComponent implements OnInit {
       });
     }
   }
+  arquivoSelecionado: File | null = null;
+
+  // Pega o arquivo quando o usuário seleciona
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.arquivoSelecionado = file;
+    }
+  }
+
+  // Envia pro back-end
+  importarArquivo() {
+    if (!this.arquivoSelecionado) {
+      alert('Selecione um arquivo CSV primeiro!');
+      return;
+    }
+
+    this.transacaoService.importarExtratoCSV(this.arquivoSelecionado).subscribe({
+      next: (res) => {
+        alert(res.mensagem);
+        this.arquivoSelecionado = null; // Limpa a seleção
+        this.carregarTransacoes(); // Recarrega a lista
+      },
+      error: (erro) => {
+        console.error('Erro na importação:', erro);
+        alert('Erro ao importar o arquivo.');
+      }
+    });
+  }
 }
