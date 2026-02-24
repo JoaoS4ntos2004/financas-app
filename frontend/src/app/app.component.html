@@ -67,32 +67,46 @@
     
     <ul style="list-style: none; padding: 0; margin: 0;">
       @for (t of transacoesFiltradas; track t.id) {
-        <li style="padding: 10px 0; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between;">
+        
+        <li style="background: #ffffff; margin-bottom: 12px; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-left: 5px solid;"
+            [style.border-left-color]="t.tipo === 'receita' ? '#4caf50' : '#f44336'"
+            style="display: flex; justify-content: space-between; align-items: center;">
           
-          <div>
-            <strong>{{ t.descricao }}</strong>
-            <span style="display: inline-block; margin-left: 10px; font-size: 0.75rem; background: #e0e0e0; padding: 2px 8px; border-radius: 12px; color: #424242;">
-              {{ t.categoria || 'Outros' }}
-            </span>
-            <br>
-            <small style="color: gray;">{{ t.data_transacao | date:'dd/MM/yyyy' }}</small>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            
+            <strong style="font-size: 1.1rem; color: #333;">{{ t.descricao }}</strong>
+            
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span style="font-size: 0.8rem; background: #f1f3f5; padding: 4px 10px; border-radius: 15px; color: #495057; font-weight: 600;">
+                🏷️ {{ t.categoria || 'Outros' }}
+              </span>
+              <small style="color: #888; font-size: 0.85rem;">
+                📅 {{ t.data_transacao | date:'dd/MM/yyyy' }}
+              </small>
+            </div>
+
           </div>
           
           <div style="display: flex; align-items: center; gap: 15px;">
-            <span [style.color]="t.tipo === 'receita' ? 'green' : 'red'" style="font-weight: bold;">
+            
+            <span [style.color]="t.tipo === 'receita' ? '#2e7d32' : '#c62828'" style="font-weight: 800; font-size: 1.1rem;">
               {{ t.tipo === 'despesa' ? '-' : '+' }} {{ t.valor | currency:'BRL' }}
             </span>
             
             <button (click)="excluirTransacao(t.id)" 
-                    style="background: transparent; border: none; cursor: pointer; font-size: 1.2rem;" 
-                    title="Apagar">
+                    style="background: #ffebee; border: none; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; transition: 0.2s;" 
+                    title="Apagar transação">
               🗑️
             </button>
+            
           </div>
 
         </li>
       } @empty {
-        <p style="color: gray; font-style: italic; text-align: center; padding: 20px 0;">Nenhuma transação encontrada. O banco está vazio!</p>
+        <div style="text-align: center; padding: 30px 0; background: white; border-radius: 8px;">
+          <h2 style="margin: 0; font-size: 2rem;">📭</h2>
+          <p style="color: gray; font-style: italic; margin-top: 10px;">Nenhuma transação encontrada. O banco está vazio!</p>
+        </div>
       }
     </ul>
 
