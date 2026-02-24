@@ -68,16 +68,12 @@
     <ul style="list-style: none; padding: 0; margin: 0;">
       @for (t of transacoesFiltradas; track t.id) {
         
-        <li style="background: #ffffff; margin-bottom: 20px; padding: 20px; border-radius: 8px; border-bottom: 1px solid #e0e0e0; border-left: 5px solid; box-shadow: 0 1px 4px rgba(0,0,0,0.02);"
-            [style.border-left-color]="t.tipo === 'receita' ? '#4caf50' : '#f44336'"
-            style="display: flex; justify-content: space-between; align-items: center;">
+        <li class="card-transacao" [style.border-left-color]="t.tipo === 'receita' ? '#4caf50' : '#f44336'">
           
           <div style="display: flex; flex-direction: column; gap: 12px;">
-            
             <span style="font-size: 1.1rem; color: #333; font-weight: 500;">
               {{ t.descricao }}
             </span>
-            
             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
               <span style="font-size: 0.8rem; background: #f1f3f5; padding: 4px 10px; border-radius: 15px; color: #555;">
                 🏷️ {{ t.categoria || 'Outros' }}
@@ -86,17 +82,17 @@
                 📅 {{ t.data_transacao | date:'dd/MM/yyyy' }}
               </small>
             </div>
-
           </div>
           
           <div style="display: flex; align-items: center; gap: 20px;">
             
-            <span [style.color]="t.tipo === 'receita' ? '#2e7d32' : '#c62828'" style="font-weight: 600; font-size: 1.1rem;">
+            <span [style.color]="t.tipo === 'receita' ? '#2e7d32' : '#c62828'" 
+                  style="font-weight: 600; font-size: 1.1rem; white-space: nowrap;">
               {{ t.tipo === 'despesa' ? '-' : '+' }} {{ t.valor | currency:'BRL' }}
             </span>
             
-            <button (click)="excluirTransacao(t.id)" 
-                    style="background: #ffebee; border: none; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; width: 35px; height: 35px; transition: 0.2s;" 
+            <button class="btn-lixeira" (click)="excluirTransacao(t.id)" 
+                    style="background: #ffebee; border: none; cursor: pointer; padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; width: 35px; height: 35px;" 
                     title="Apagar transação">
               🗑️
             </button>
