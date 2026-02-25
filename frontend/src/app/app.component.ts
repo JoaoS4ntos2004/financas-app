@@ -62,28 +62,52 @@ export class AppComponent implements OnInit {
     });
   }
 
-  // --- FUNÇÃO AUXILIAR PARA EXTRAIR A DATA DO FORMATO DO BANCO ---
-  private obterTimestamp(dataStr: any): number {
-    if (!dataStr) return 0;
-    const s = String(dataStr);
-    
-    // Corta o " 00:00:00.000" e pega só o "2026-02-22" para ordenar certo
-    if (s.includes('-')) {
-      const apenasData = s.split(' ')[0].split('T')[0]; 
-      return new Date(apenasData).getTime() || 0;
+  // --- A SOLUÇÃO DEFINITIVA: EXTRATOR MATEMÁTICO DE DATAS ---
+  private parseDataSegura(dataStr: any): Date | null {
+    if (!dataStr) return null;
+    const s = String(dataStr).trim();
+
+    try {
+      // Se vier do banco como '2026-02-22 00:00:00' ou '2026-02-22T00:00:00.000'
+      if (s.includes('-')) {
+        // Pega apenas a parte da data '2026-02-22' e separa pelos traços
+        const parteData = s.split(' ')[0].split('T')[0];
+        const partes = parteData.split('-');
+        
+        if (partes.length === 3) {
+          // new Date(ano, mês_index, dia) -> Obs: Mês começa no 0 no JS
+          return new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
+        }
+      }
+
+      // Se por acaso vier no formato BR '22/02/2026'
+      if (s.includes('/')) {
+        const parteData = s.split(' ')[0];
+        const partes = parteData.split('/');
+        if (partes.length === 3) {
+          return new Date(Number(partes[2]), Number(partes[1]) - 1, Number(partes[0]));
+        }
+      }
+    } catch (e) {
+      console.error("Erro ao ler data:", dataStr);
     }
-    return 0;
+    
+    return null; 
   }
 
-  // Corta a lista gigante e deixa só a do mês escolhido
+  // --- O FILTRO QUE AGORA ENTENDE A DATA ---
   filtrarPorMes() {
     if (!this.mesAnoSelecionado) {
       this.transacoesDoMes = [...this.transacoes];
     } else {
-      // Procura o "2026-02" dentro da string "2026-02-22 00:00:00.000"
+      const [anoSel, mesSel] = this.mesAnoSelecionado.split('-');
+      
       this.transacoesDoMes = this.transacoes.filter(t => {
-        if (!t.data_transacao) return false;
-        return String(t.data_transacao).includes(this.mesAnoSelecionado);
+        const d = this.parseDataSegura(t.data_transacao);
+        if (!d) return false;
+        
+        // Compara os números com precisão cirúrgica
+        return d.getFullYear() === Number(anoSel) && (d.getMonth() + 1) === Number(mesSel);
       });
     }
 
@@ -97,6 +121,23 @@ export class AppComponent implements OnInit {
       this.graficoCategorias.destroy();
       this.graficoCategorias = null;
     }
+  }
+
+  // --- A ORDENAÇÃO QUE AGORA FUNCIONA ---
+  aplicarFiltrosEPaginacao() {
+    let temp = [...this.transacoesDoMes];
+    
+    temp.sort((a, b) => {
+      // Extrai o tempo numérico exato para ordenar
+      const dataA = this.parseDataSegura(a.data_transacao)?.getTime() || 0;
+      const dataB = this.parseDataSegura(b.data_transacao)?.getTime() || 0;
+      
+      return this.ordemMaisNovas ? dataB - dataA : dataA - dataB;
+    });
+
+    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
+    const fim = inicio + this.itensPorPagina;
+    this.transacoesFiltradas = temp.slice(inicio, fim);
   }
 
   adicionarTransacao() {
@@ -135,20 +176,6 @@ export class AppComponent implements OnInit {
         }
       });
     }
-  }
-
-  aplicarFiltrosEPaginacao() {
-    let temp = [...this.transacoesDoMes];
-    
-    temp.sort((a, b) => {
-      const dataA = this.obterTimestamp(a.data_transacao);
-      const dataB = this.obterTimestamp(b.data_transacao);
-      return this.ordemMaisNovas ? dataB - dataA : dataA - dataB;
-    });
-
-    const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
-    const fim = inicio + this.itensPorPagina;
-    this.transacoesFiltradas = temp.slice(inicio, fim);
   }
 
   mudarOrdem() {
