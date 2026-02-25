@@ -68,12 +68,12 @@ export class AppComponent implements OnInit {
     if (!this.mesAnoSelecionado) {
       this.transacoesDoMes = [...this.transacoes];
     } else {
-      const [anoSel, mesSel] = this.mesAnoSelecionado.split('-');
-      
+      // Solução à prova de fuso horário: usamos startsWith() no lugar de new Date()
+      // Ex: t.data_transacao ("2026-02-15T...") começa com "2026-02"? 
       this.transacoesDoMes = this.transacoes.filter(t => {
         if (!t.data_transacao) return false;
-        const data = new Date(t.data_transacao);
-        return data.getFullYear() === parseInt(anoSel) && (data.getMonth() + 1) === parseInt(mesSel);
+        const dataStr = t.data_transacao.toString(); 
+        return dataStr.startsWith(this.mesAnoSelecionado);
       });
     }
 
@@ -82,11 +82,15 @@ export class AppComponent implements OnInit {
     this.calcularResumo();
     this.aplicarFiltrosEPaginacao();
     
-    if (this.transacoes.length > 0) {
+    // Atualiza o gráfico ou apaga se o mês estiver vazio
+    if (this.transacoesDoMes.length > 0) {
       setTimeout(() => this.atualizarGrafico(), 50);
+    } else if (this.graficoCategorias) {
+      this.graficoCategorias.destroy();
+      this.graficoCategorias = null;
     }
   }
-
+  
   // 4. Função que o botão "Salvar" vai chamar
   adicionarTransacao() {
     // Validação básica
