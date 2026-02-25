@@ -31,6 +31,12 @@ export class AppComponent implements OnInit {
   paginaAtual: number = 1;
   itensPorPagina: number = 15;     // Quantidade de itens por página
 
+// Variáveis do Filtro de Categoria na Lista
+  categoriaSelecionada: string = 'Todas';
+  categoriasDisponiveis: string[] = [];
+  totalItensFiltro: number = 0; // Para a paginação não quebrar quando filtrar
+
+
   // Variável do Gráfico
   graficoCategorias: any;
 
@@ -95,7 +101,7 @@ export class AppComponent implements OnInit {
     return null; 
   }
 
-  // --- O FILTRO QUE AGORA ENTENDE A DATA ---
+  // --- O FILTRO QUE AGORA ENTENDE A DATA E AS CATEGORIAS ---
   filtrarPorMes() {
     if (!this.mesAnoSelecionado) {
       this.transacoesDoMes = [...this.transacoes];
@@ -105,10 +111,17 @@ export class AppComponent implements OnInit {
       this.transacoesDoMes = this.transacoes.filter(t => {
         const d = this.parseDataSegura(t.data_transacao);
         if (!d) return false;
-        
-        // Compara os números com precisão cirúrgica
         return d.getFullYear() === Number(anoSel) && (d.getMonth() + 1) === Number(mesSel);
       });
+    }
+
+    // EXTRAI AS CATEGORIAS ÚNICAS DO MÊS PARA O FILTRO
+    const setCat = new Set(this.transacoesDoMes.map(t => t.categoria || 'Outros'));
+    this.categoriasDisponiveis = Array.from(setCat).sort();
+    
+    // Se mudou de mês e a categoria selecionada não existe nele, volta pra "Todas"
+    if (this.categoriaSelecionada !== 'Todas' && !this.categoriasDisponiveis.includes(this.categoriaSelecionada)) {
+      this.categoriaSelecionada = 'Todas';
     }
 
     this.paginaAtual = 1; 
@@ -123,21 +136,36 @@ export class AppComponent implements OnInit {
     }
   }
 
-  // --- A ORDENAÇÃO QUE AGORA FUNCIONA ---
+  // --- A ORDENAÇÃO E O NOVO FILTRO DE CATEGORIA ---
   aplicarFiltrosEPaginacao() {
-    let temp = [...this.transacoesDoMes];
+    // 1. Filtra primeiro pela categoria escolhida
+    let temp = this.categoriaSelecionada === 'Todas' 
+      ? [...this.transacoesDoMes] 
+      : this.transacoesDoMes.filter(t => (t.categoria || 'Outros') === this.categoriaSelecionada);
     
+    // Salva o total de itens para a paginação calcular certo
+    this.totalItensFiltro = temp.length;
+
+    // 2. Ordena pelas datas
     temp.sort((a, b) => {
-      // Extrai o tempo numérico exato para ordenar
       const dataA = this.parseDataSegura(a.data_transacao)?.getTime() || 0;
       const dataB = this.parseDataSegura(b.data_transacao)?.getTime() || 0;
-      
       return this.ordemMaisNovas ? dataB - dataA : dataA - dataB;
     });
 
+    // 3. Fatiamento das páginas
     const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
     const fim = inicio + this.itensPorPagina;
     this.transacoesFiltradas = temp.slice(inicio, fim);
+  }
+
+  mudarCategoria() {
+    this.paginaAtual = 1; // Volta pra página 1 ao trocar a categoria
+    this.aplicarFiltrosEPaginacao();
+  }
+
+  get totalPaginas(): number {
+    return Math.ceil(this.totalItensFiltro / this.itensPorPagina) || 1;
   }
 
   adicionarTransacao() {
@@ -198,9 +226,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  get totalPaginas(): number {
-    return Math.ceil(this.transacoesDoMes.length / this.itensPorPagina) || 1;
-  }
+
 
   calcularResumo() {
     this.totalReceitas = 0;
