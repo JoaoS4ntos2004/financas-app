@@ -1,5 +1,18 @@
 <main style="font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;">
-    <h1>Meu Controle Financeiro 💰</h1>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+    
+    <h1 style="margin: 0; color: #333;">Meu Controle Financeiro 💰</h1>
+    
+    <div style="display: flex; align-items: center; gap: 10px; background: white; padding: 10px 15px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
+      <label for="mesFiltro" style="font-weight: 600; color: #555;">📅 Período:</label>
+      
+      <input type="month" id="mesFiltro" 
+             [(ngModel)]="mesAnoSelecionado" 
+             (change)="filtrarPorMes()" 
+             style="padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; font-size: 1rem; cursor: pointer; background: #f9f9f9;">
+    </div>
+    
+  </div>
   
   <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
     

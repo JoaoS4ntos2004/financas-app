@@ -15,10 +15,16 @@ Chart.register(...registerables);
 export class AppComponent implements OnInit {
   transacoes: Transacao[] = [];
   private transacaoService = inject(TransacaoService);
+
   // Variáveis do Dashboard
   totalReceitas: number = 0;
   totalDespesas: number = 0;
   saldoGeral: number = 0;
+
+  // Filtro de Mês/Ano
+  mesAnoSelecionado: string = ''; // Vai guardar o valor 'YYYY-MM'
+  transacoesDoMes: any[] = [];    // A lista apenas com os dados do mês escolhido
+
   // Variáveis de Filtro e Paginação
   transacoesFiltradas: any[] = []; // A lista fatiada que vai pra tela
   ordemMaisNovas: boolean = true;  // Começa mostrando as mais recentes
@@ -36,6 +42,12 @@ export class AppComponent implements OnInit {
   };
 
   ngOnInit() {
+    // Define o mês atual como padrão (ex: "2026-02")
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    this.mesAnoSelecionado = `${ano}-${mes}`;
+
     this.carregarTransacoes();
   }
 
@@ -43,14 +55,36 @@ export class AppComponent implements OnInit {
     this.transacaoService.getTransacoes().subscribe({
       next: (dados) => {
         this.transacoes = dados;
-        this.calcularResumo();
-        this.aplicarFiltrosEPaginacao();
-        setTimeout(() => this.atualizarGrafico(), 100);
+        this.filtrarPorMes();
       },
       error: (erro) => {
         console.error('Erro ao buscar transações:', erro);
       }
     });
+  }
+
+  // Corta a lista gigante e deixa só a do mês escolhido
+  filtrarPorMes() {
+    if (!this.mesAnoSelecionado) {
+      this.transacoesDoMes = [...this.transacoes];
+    } else {
+      const [anoSel, mesSel] = this.mesAnoSelecionado.split('-');
+      
+      this.transacoesDoMes = this.transacoes.filter(t => {
+        if (!t.data_transacao) return false;
+        const data = new Date(t.data_transacao);
+        return data.getFullYear() === parseInt(anoSel) && (data.getMonth() + 1) === parseInt(mesSel);
+      });
+    }
+
+    // Depois de separar o mês, manda recalcular TUDO!
+    this.paginaAtual = 1; 
+    this.calcularResumo();
+    this.aplicarFiltrosEPaginacao();
+    
+    if (this.transacoes.length > 0) {
+      setTimeout(() => this.atualizarGrafico(), 50);
+    }
   }
 
   // 4. Função que o botão "Salvar" vai chamar
@@ -101,7 +135,7 @@ export class AppComponent implements OnInit {
   // Aplica a ordem das datas e recorta a lista para a página atual
   aplicarFiltrosEPaginacao() {
     // 1. Clona a lista original e ordena por data
-    let temp = [...this.transacoes];
+    let temp = [...this.transacoesDoMes];
     
     temp.sort((a, b) => {
       // Se não tiver data, assume 0 para o TypeScript não reclamar
@@ -140,7 +174,7 @@ export class AppComponent implements OnInit {
 
   // Calcula o total de páginas para mostrar no HTML
   get totalPaginas(): number {
-    return Math.ceil(this.transacoes.length / this.itensPorPagina) || 1;
+    return Math.ceil(this.transacoesDoMes.length / this.itensPorPagina) || 1;
   }
 
 
@@ -149,7 +183,7 @@ export class AppComponent implements OnInit {
     this.totalReceitas = 0;
     this.totalDespesas = 0;
 
-    for (let t of this.transacoes) {
+    for (let t of this.transacoesDoMes) {
       if (t.tipo === 'receita') {
         this.totalReceitas += t.valor;
       } else if (t.tipo === 'despesa') {
@@ -164,7 +198,7 @@ export class AppComponent implements OnInit {
   // Agrupa as despesas por categoria e desenha o gráfico
   atualizarGrafico() {
     // 1. Filtra só as despesas
-    const despesas = this.transacoes.filter(t => t.tipo === 'despesa');
+    const despesas = this.transacoesDoMes.filter(t => t.tipo === 'despesa');
 
     // 2. Agrupa os valores por categoria
     const gastosPorCategoria: { [key: string]: number } = {};
