@@ -2,6 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // <-- 1. Importante para formulários!
 import { TransacaoService, Transacao } from './services/transacao.service';
+import { Chart, registerables } from 'chart.js';
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-root',
@@ -23,6 +25,9 @@ export class AppComponent implements OnInit {
   paginaAtual: number = 1;
   itensPorPagina: number = 15;     // Quantidade de itens por página
 
+  // Variável do Gráfico
+  graficoCategorias: any;
+
   // 3. Este objeto vai ficar "ligado" aos campos da tela
   novaTransacao: Transacao = {
     descricao: '',
@@ -40,6 +45,7 @@ export class AppComponent implements OnInit {
         this.transacoes = dados;
         this.calcularResumo();
         this.aplicarFiltrosEPaginacao();
+        setTimeout(() => this.atualizarGrafico(), 100);
       },
       error: (erro) => {
         console.error('Erro ao buscar transações:', erro);
@@ -153,6 +159,56 @@ export class AppComponent implements OnInit {
     
     // Calcula o saldo final
     this.saldoGeral = this.totalReceitas - this.totalDespesas;
+  }
+
+  // Agrupa as despesas por categoria e desenha o gráfico
+  atualizarGrafico() {
+    // 1. Filtra só as despesas
+    const despesas = this.transacoes.filter(t => t.tipo === 'despesa');
+
+    // 2. Agrupa os valores por categoria
+    const gastosPorCategoria: { [key: string]: number } = {};
+    
+    despesas.forEach(t => {
+      const cat = t.categoria || 'Outros';
+      if (!gastosPorCategoria[cat]) {
+        gastosPorCategoria[cat] = 0;
+      }
+      gastosPorCategoria[cat] += t.valor;
+    });
+
+    // 3. Separa os nomes (labels) e os valores (data) para o Chart.js
+    const labels = Object.keys(gastosPorCategoria);
+    const dados = Object.values(gastosPorCategoria);
+
+    // 4. Se já existir um gráfico na tela, destrói para desenhar o novo por cima
+    if (this.graficoCategorias) {
+      this.graficoCategorias.destroy();
+    }
+
+    // 5. Cria o gráfico de Rosquinha (Doughnut)
+    this.graficoCategorias = new Chart('canvasCategorias', {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: dados,
+          backgroundColor: [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', 
+            '#FF9F40', '#E7E9ED', '#8D6E63', '#26A69A', '#EF5350'
+          ],
+          borderWidth: 2,
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right' }
+        }
+      }
+    });
   }
 
 

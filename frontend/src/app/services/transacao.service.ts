@@ -8,6 +8,7 @@ export interface Transacao {
   descricao: string;
   valor: number;
   tipo: string;
+  categoria?: string;
   data_transacao?: string;
   consolidado?: boolean;
 }
