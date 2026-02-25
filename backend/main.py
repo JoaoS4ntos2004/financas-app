@@ -90,7 +90,7 @@ def criar_transacao(transacao: TransacaoCreate, db: Session = Depends(get_db)):
     return nova_transacao
 
 @app.get("/transacoes/", response_model=List[TransacaoResponse])
-def listar_transacoes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def listar_transacoes(skip: int = 0, limit: int = 10000, db: Session = Depends(get_db)):
     transacoes = db.query(Transacao).offset(skip).limit(limit).all()
     return transacoes
 
