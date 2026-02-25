@@ -68,12 +68,20 @@ export class AppComponent implements OnInit {
     if (!this.mesAnoSelecionado) {
       this.transacoesDoMes = [...this.transacoes];
     } else {
-      // Solução à prova de fuso horário: usamos startsWith() no lugar de new Date()
-      // Ex: t.data_transacao ("2026-02-15T...") começa com "2026-02"? 
+      const [anoSel, mesSel] = this.mesAnoSelecionado.split('-');
+      
       this.transacoesDoMes = this.transacoes.filter(t => {
         if (!t.data_transacao) return false;
-        const dataStr = t.data_transacao.toString(); 
-        return dataStr.startsWith(this.mesAnoSelecionado);
+        
+        // Converte a data do banco para o objeto Date
+        const data = new Date(t.data_transacao);
+        
+        // A MÁGICA: Usar getUTC ignora o fuso horário do Brasil (GMT-3) 
+        // e impede que o dia 01 do mês volte para o dia 31 do mês anterior!
+        const anoTransacao = data.getUTCFullYear();
+        const mesTransacao = data.getUTCMonth() + 1; // getUTCMonth começa em 0
+        
+        return anoTransacao === parseInt(anoSel) && mesTransacao === parseInt(mesSel);
       });
     }
 
@@ -90,7 +98,7 @@ export class AppComponent implements OnInit {
       this.graficoCategorias = null;
     }
   }
-  
+
   // 4. Função que o botão "Salvar" vai chamar
   adicionarTransacao() {
     // Validação básica
