@@ -1,17 +1,18 @@
-/* 1. RESET E ESTRUTURA BASE */
+/* Remove a moldura branca padrão do navegador */
 :host {
   display: block;
-  height: 100vh;
 }
 
+/* Estrutura principal */
 .app-container {
   display: flex;
   height: 100vh;
   width: 100vw;
-  overflow: hidden; /* Evita scroll duplo na página toda */
+  background-color: #f4f7f6;
+  overflow: hidden;
 }
 
-/* 2. SIDEBAR (CONFIGURAÇÃO PARA PC) */
+/* Sidebar (PC) */
 .sidebar {
   width: 260px;
   background-color: #1e293b;
@@ -19,75 +20,55 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-  flex-shrink: 0; /* Impede a sidebar de "encolher" no PC */
+  flex-shrink: 0;
 }
 
-.logo {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
+.logo { text-align: center; margin-bottom: 30px; }
 .logo h2 { color: #38bdf8; margin: 0; }
-.logo p { color: #94a3b8; font-size: 0.8rem; margin: 5px 0 0 0; }
+.logo p { font-size: 0.8rem; color: #94a3b8; margin-top: 5px; }
 
-.menu-links {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.menu-links { display: flex; flex-direction: column; gap: 8px; }
 
 .menu-links a {
+  display: flex;
+  align-items: center;
   color: #cbd5e1;
   text-decoration: none;
-  padding: 12px 15px;
+  padding: 14px 18px;
   border-radius: 8px;
   font-weight: 500;
-  transition: 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.menu-links a:hover {
-  background-color: #334155;
-  color: white;
-}
-
-/* 3. CONTEÚDO PRINCIPAL (ONDE AS TELAS APARECEM) */
+/* Conteúdo central */
 .content {
   flex: 1;
-  overflow-y: auto; /* O scroll fica só aqui dentro */
-  background-color: #f4f7f6;
+  overflow-y: auto;
   padding: 30px;
+  box-sizing: border-box;
 }
 
-/* 4. ELEMENTOS ESCONDIDOS NO PC */
-.bottom-nav, .mobile-spacer {
-  display: none;
-}
+/* Bottom Nav (Mobile) */
+.bottom-nav { display: none; }
 
-/* 5. ATIVO (ESTILO PARA O LINK CLICADO) */
+/* ESTADO ATIVO (O QUADRADO AZUL) */
 .ativo {
   background-color: #38bdf8 !important;
   color: #0f172a !important;
 }
 
-/* 📱 -------------------------------------------
-   RESPONSIVIDADE PARA CELULAR (ATÉ 768px)
-   ------------------------------------------- */
+/* 📱 RESPONSIVIDADE CELULAR */
 @media (max-width: 768px) {
-  .app-container {
-    flex-direction: column; /* No celular, o layout vira coluna */
-  }
+  .sidebar { display: none; }
 
-  .sidebar {
-    display: none; /* SOME A BARRA LATERAL NO CELULAR */
-  }
+  .app-container { flex-direction: column; }
 
   .content {
     padding: 15px;
-    padding-bottom: 90px; /* Garante que o conteúdo não fique sob o menu */
+    padding-bottom: 90px; /* Evita que o menu mobile tampe o conteúdo */
   }
 
-  /* APARECE A BARRA INFERIOR NO CELULAR */
   .bottom-nav {
     display: flex;
     position: fixed;
@@ -96,24 +77,21 @@
     right: 0;
     height: 70px;
     background-color: #1e293b;
-    justify-content: space-around;
-    align-items: center;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
-    z-index: 9999;
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
   }
 
   .bottom-nav a {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     color: #94a3b8;
     text-decoration: none;
-    font-size: 0.7rem;
-    gap: 5px;
-    flex: 1;
+    height: 100%;
   }
 
-  .bottom-nav a span {
-    font-weight: 500;
-  }
+  .bottom-nav a .icon { font-size: 1.2rem; }
+  .bottom-nav a .label { font-size: 0.7rem; margin-top: 4px; }
 }

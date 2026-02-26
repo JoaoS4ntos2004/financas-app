@@ -1,5 +1,4 @@
 <div class="app-container">
-
   <nav class="sidebar">
     <div class="logo">
       <h2>FinanceApp 💰</h2>
@@ -15,14 +14,24 @@
 
   <main class="content">
     <router-outlet></router-outlet>
-    <div class="mobile-spacer"></div>
   </main>
 
   <nav class="bottom-nav">
-    <a routerLink="/dashboard" routerLinkActive="ativo">📊 <span>Home</span></a>
-    <a routerLink="/orcamentos" routerLinkActive="ativo">🎯 <span>Metas</span></a>
-    <a routerLink="/estatisticas" routerLinkActive="ativo">📈 <span>Estat.</span></a>
-    <a routerLink="/configuracoes" routerLinkActive="ativo">⚙️ <span>Config</span></a>
+    <a routerLink="/dashboard" routerLinkActive="ativo">
+      <span class="icon">📊</span>
+      <span class="label">Home</span>
+    </a>
+    <a routerLink="/orcamentos" routerLinkActive="ativo">
+      <span class="icon">🎯</span>
+      <span class="label">Metas</span>
+    </a>
+    <a routerLink="/estatisticas" routerLinkActive="ativo">
+      <span class="icon">📈</span>
+      <span class="label">Estat.</span>
+    </a>
+    <a routerLink="/configuracoes" routerLinkActive="ativo">
+      <span class="icon">⚙️</span>
+      <span class="label">Ajustes</span>
+    </a>
   </nav>
-
 </div>

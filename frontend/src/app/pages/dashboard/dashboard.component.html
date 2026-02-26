@@ -1,88 +1,75 @@
-<main style="font-family: sans-serif; padding: 10px; margin-bottom: 80px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
-    <h1 style="margin: 0; color: #333; font-size: 1.5rem;">Finanças 💰</h1>
-    
-    <div style="background: white; padding: 8px 12px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
-      <input type="month" [(ngModel)]="mesAnoSelecionado" (ngModelChange)="filtrarPorMes()" 
-             style="border: none; font-family: inherit; font-size: 0.9rem; cursor: pointer; background: transparent; outline: none; font-weight: bold;">
-    </div>
-  </div>
+<main class="dashboard-wrapper">
   
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px;">
-    <div style="padding: 12px; border-radius: 8px; background: #e8f5e9; border: 1px solid #4caf50;">
-      <h4 style="margin: 0; color: #2e7d32; font-size: 0.8rem;">Receitas</h4>
-      <h3 style="margin: 5px 0 0 0; color: #1b5e20; font-size: 1.1rem;">{{ totalReceitas | currency:'BRL' }}</h3>
+  <header class="dash-header">
+    <h1>Controle Financeiro 💰</h1>
+    <div class="date-picker">
+      <input type="month" [(ngModel)]="mesAnoSelecionado" (ngModelChange)="filtrarPorMes()">
     </div>
+  </header>
 
-    <div style="padding: 12px; border-radius: 8px; background: #ffebee; border: 1px solid #f44336;">
-      <h4 style="margin: 0; color: #c62828; font-size: 0.8rem;">Despesas</h4>
-      <h3 style="margin: 5px 0 0 0; color: #b71c1c; font-size: 1.1rem;">{{ totalDespesas | currency:'BRL' }}</h3>
+  <section class="kpi-grid">
+    <div class="kpi-card receita">
+      <span class="kpi-label">Receitas</span>
+      <h3 class="kpi-value">{{ totalReceitas | currency:'BRL' }}</h3>
     </div>
-
-    <div style="padding: 12px; border-radius: 8px; background: #e3f2fd; border: 1px solid #2196f3;">
-      <h4 style="margin: 0; color: #1565c0; font-size: 0.8rem;">Saldo</h4>
-      <h3 style="margin: 5px 0 0 0; color: #0d47a1; font-size: 1.1rem;">{{ saldoGeral | currency:'BRL' }}</h3>
+    <div class="kpi-card despesa">
+      <span class="kpi-label">Despesas</span>
+      <h3 class="kpi-value">{{ totalDespesas | currency:'BRL' }}</h3>
     </div>
-  </div>
-
-  <div style="background: #ffffff; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e0e0e0;">
-    <h3 style="margin: 0 0 15px 0; color: #424242; font-size: 1rem; text-align: center;">🍕 Gastos por Categoria</h3>
-    <div style="position: relative; height: 250px; width: 100%;">
-      <canvas id="canvasCategorias"></canvas>
+    <div class="kpi-card saldo">
+      <span class="kpi-label">Saldo Atual</span>
+      <h3 class="kpi-value">{{ saldoGeral | currency:'BRL' }}</h3>
     </div>
-  </div>
+  </section>
 
-  <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-    <h3 style="margin: 0 0 12px 0; font-size: 1rem;">Novo Lançamento</h3>
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <input type="text" placeholder="Descrição" [(ngModel)]="novaTransacao.descricao" style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-      <div style="display: flex; gap: 10px;">
-        <input type="number" placeholder="Valor" [(ngModel)]="novaTransacao.valor" style="flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-        <select [(ngModel)]="novaTransacao.tipo" style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-          <option value="despesa">Despesa</option>
-          <option value="receita">Receita</option>
-        </select>
+  <div class="grid-main">
+    <div class="chart-container">
+      <h3>🍕 Despesas por Categoria</h3>
+      <div class="canvas-box">
+        <canvas id="canvasCategorias"></canvas>
       </div>
-      <button (click)="adicionarTransacao()" style="padding: 12px; background: #28a745; color: white; border: none; border-radius: 6px; font-weight: bold;">Salvar</button>
+    </div>
+
+    <div class="action-column">
+      <div class="form-card">
+        <h3>Novo Lançamento</h3>
+        <input type="text" placeholder="Descrição" [(ngModel)]="novaTransacao.descricao">
+        <div class="row">
+          <input type="number" placeholder="Valor" [(ngModel)]="novaTransacao.valor">
+          <select [(ngModel)]="novaTransacao.tipo">
+            <option value="despesa">Despesa</option>
+            <option value="receita">Receita</option>
+          </select>
+        </div>
+        <button (click)="adicionarTransacao()" class="btn-add">Salvar</button>
+      </div>
     </div>
   </div>
 
-  <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #2196f3;">
-    <h3 style="margin: 0 0 10px 0; font-size: 1rem; color: #0d47a1;">📥 Importar CSV</h3>
-    <input type="file" accept=".csv" (change)="onFileSelected($event)" style="width: 100%; margin-bottom: 10px; font-size: 0.8rem;">
-    <button (click)="importarArquivo()" [disabled]="!arquivoSelecionado" style="width: 100%; padding: 10px; background: #0d47a1; color: white; border: none; border-radius: 6px; font-weight: bold;">Importar Dados</button>
-  </div>
-
-  <div style="background: #f4f4f4; padding: 10px; border-radius: 8px;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-      <h3 style="margin: 0; font-size: 1rem;">📋 Lista</h3>
-      <select [(ngModel)]="categoriaSelecionada" (ngModelChange)="mudarCategoria()" style="padding: 5px; border-radius: 6px; max-width: 150px;">
+  <section class="list-section">
+    <div class="list-header">
+      <h3>📋 Lançamentos</h3>
+      <select [(ngModel)]="categoriaSelecionada" (ngModelChange)="mudarCategoria()">
         <option value="Todas">Todas</option>
         @for (cat of categoriasDisponiveis; track cat) { <option [value]="cat">{{ cat }}</option> }
       </select>
     </div>
-    
-    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-      @for (t of transacoesFiltradas; track t.id) {
-        <li style="background: white; padding: 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid;" [style.border-left-color]="t.tipo === 'receita' ? '#4caf50' : '#f44336'">
-          <div style="display: flex; flex-direction: column; max-width: 60%;">
-            <span style="font-weight: 500; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ t.descricao }}</span>
-            <small style="color: #888; font-size: 0.75rem;">{{ t.data_transacao | date:'dd/MM' }} • {{ t.categoria }}</small>
-          </div>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span [style.color]="t.tipo === 'receita' ? '#2e7d32' : '#c62828'" style="font-weight: bold; font-size: 0.9rem;">
-              {{ t.valor | currency:'BRL' }}
-            </span>
-            <button (click)="excluirTransacao(t.id)" style="background: #ffebee; border: none; padding: 5px; border-radius: 4px; color: #f44336;">🗑️</button>
-          </div>
-        </li>
-      }
-    </ul>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
-      <button (click)="paginaAnterior()" [disabled]="paginaAtual === 1" style="padding: 8px;">⬅️</button>
-      <span style="font-size: 0.8rem;">{{ paginaAtual }}/{{ totalPaginas }}</span>
-      <button (click)="proximaPagina()" [disabled]="paginaAtual === totalPaginas" style="padding: 8px;">➡️</button>
+    <div class="transaction-stack">
+      @for (t of transacoesFiltradas; track t.id) {
+        <div class="t-card" [class.t-receita]="t.tipo === 'receita'" [class.t-despesa]="t.tipo === 'despesa'">
+          <div class="t-main">
+            <span class="t-desc">{{ t.descricao }}</span>
+            <small class="t-meta">{{ t.data_transacao | date:'dd/MM' }} • {{ t.categoria }}</small>
+          </div>
+          <div class="t-right">
+            <span class="t-amount" [class.txt-receita]="t.tipo === 'receita'">
+              {{ t.tipo === 'despesa' ? '-' : '+' }} {{ t.valor | currency:'BRL' }}
+            </span>
+            <button (click)="excluirTransacao(t.id)" class="btn-del">🗑️</button>
+          </div>
+        </div>
+      }
     </div>
-  </div>
+  </section>
 </main>
