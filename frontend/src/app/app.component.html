@@ -1,33 +1,28 @@
-<div style="display: flex; min-height: 100vh; background-color: #f4f7f6; font-family: sans-serif; margin: -8px;">
+<div class="app-container">
 
-  <nav style="width: 250px; background-color: #1e293b; color: white; padding: 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); z-index: 10;">
-    
-    <div style="text-align: center; margin-bottom: 30px; margin-top: 10px;">
-      <h2 style="margin: 0; color: #38bdf8;">FinanceApp 💰</h2>
-      <p style="margin: 5px 0 0 0; font-size: 0.8rem; color: #94a3b8;">Controle Inteligente</p>
+  <nav class="sidebar">
+    <div class="logo">
+      <h2>FinanceApp 💰</h2>
+      <p>João Pedro</p>
     </div>
-
-    <a routerLink="/dashboard" routerLinkActive="ativo" style="color: #cbd5e1; text-decoration: none; padding: 12px 15px; border-radius: 6px; font-weight: 500; display: block; transition: 0.2s;">
-      📊 Dashboard
-    </a>
-    
-    <a routerLink="/orcamentos" routerLinkActive="ativo" style="color: #cbd5e1; text-decoration: none; padding: 12px 15px; border-radius: 6px; font-weight: 500; display: block; transition: 0.2s;">
-      🎯 Metas e Orçamentos
-    </a>
-
-    <a routerLink="/estatisticas" routerLinkActive="ativo" style="color: #cbd5e1; text-decoration: none; padding: 12px 15px; border-radius: 6px; font-weight: 500; display: block; transition: 0.2s;">
-      📈 Estatísticas
-    </a>
-
-    <a routerLink="/configuracoes" routerLinkActive="ativo" style="color: #cbd5e1; text-decoration: none; padding: 12px 15px; border-radius: 6px; font-weight: 500; display: block; margin-top: auto; transition: 0.2s;">
-      ⚙️ Configurações
-    </a>
+    <div class="menu-links">
+      <a routerLink="/dashboard" routerLinkActive="ativo">📊 Dashboard</a>
+      <a routerLink="/orcamentos" routerLinkActive="ativo">🎯 Metas</a>
+      <a routerLink="/estatisticas" routerLinkActive="ativo">📈 Estatísticas</a>
+      <a routerLink="/configuracoes" routerLinkActive="ativo">⚙️ Ajustes</a>
+    </div>
   </nav>
 
-  <main style="flex: 1; padding: 30px; overflow-y: auto; height: 100vh; box-sizing: border-box;">
-    
+  <main class="content">
     <router-outlet></router-outlet>
-
+    <div class="mobile-spacer"></div>
   </main>
+
+  <nav class="bottom-nav">
+    <a routerLink="/dashboard" routerLinkActive="ativo">📊 <span>Home</span></a>
+    <a routerLink="/orcamentos" routerLinkActive="ativo">🎯 <span>Metas</span></a>
+    <a routerLink="/estatisticas" routerLinkActive="ativo">📈 <span>Estat.</span></a>
+    <a routerLink="/configuracoes" routerLinkActive="ativo">⚙️ <span>Config</span></a>
+  </nav>
 
 </div>
