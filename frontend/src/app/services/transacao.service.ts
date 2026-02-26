@@ -40,6 +40,12 @@ export class TransacaoService {
     return this.http.post(urlFinal, orcamento);
   }
 
+  excluirOrcamento(categoria: string): Observable<any> {
+    const baseUrl = this.apiUrl.split('/transacoes')[0]; 
+    const urlFinal = `${baseUrl}/orcamentos/${categoria}`;
+    return this.http.delete(urlFinal);
+  }
+
   // Já deixamos pronto para o futuro: criar nova transação
   criarTransacao(transacao: Transacao): Observable<Transacao> {
     return this.http.post<Transacao>(this.apiUrl, transacao);

@@ -247,3 +247,13 @@ def salvar_orcamento(orcamento: OrcamentoBase, db: Session = Depends(get_db)):
         
     db.commit()
     return {"mensagem": f"Orçamento de {orcamento.categoria} salvo com sucesso!"}
+
+@app.delete("/orcamentos/{categoria}")
+def deletar_orcamento(categoria: str, db: Session = Depends(get_db)):
+    db_orc = db.query(Orcamento).filter(Orcamento.categoria == categoria).first()
+    if not db_orc:
+        raise HTTPException(status_code=404, detail="Orçamento não encontrado")
+    
+    db.delete(db_orc)
+    db.commit()
+    return {"mensagem": f"Meta de {categoria} removida com sucesso!"}

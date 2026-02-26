@@ -44,9 +44,14 @@
               <span style="color: #64748b; font-size: 0.9rem;">R$ {{ orc.limite_mensal | number:'1.2-2' }}</span>
             </div>
             
-            <button (click)="editarMeta(orc)" style="padding: 6px 10px; background: transparent; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; color: #64748b;">
-              ✏️ Editar
-            </button>
+            <div style="display: flex; gap: 8px;">
+                <button (click)="editarMeta(orc)" style="padding: 6px 10px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; color: #64748b;">
+                    ✏️
+                </button>
+                <button (click)="excluirMeta(orc.categoria)" style="padding: 6px 10px; background: #fee2e2; border: 1px solid #fecaca; border-radius: 4px; cursor: pointer; color: #ef4444;">
+                    🗑️
+                </button>
+            </div>
           </div>
         }
       </div>

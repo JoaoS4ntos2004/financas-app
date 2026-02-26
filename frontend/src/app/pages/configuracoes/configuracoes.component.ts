@@ -58,4 +58,22 @@ export class ConfiguracoesComponent implements OnInit {
     this.novaMeta.categoria = orc.categoria;
     this.novaMeta.limite_mensal = orc.limite_mensal;
   }
+
+  excluirMeta(categoria: string) {
+    const confirmacao = confirm(`Tem certeza que deseja excluir a meta de "${categoria}"?`);
+    
+    if (confirmacao) {
+      this.transacaoService.excluirOrcamento(categoria).subscribe({
+        next: (res) => {
+          console.log('Meta removida:', res.mensagem);
+          this.carregarOrcamentos(); // Atualiza a lista na tela na hora
+        },
+        error: (erro) => {
+          console.error('Erro ao excluir meta:', erro);
+          alert('Não foi possível excluir a meta.');
+        }
+      });
+    }
+  }
 }
+
