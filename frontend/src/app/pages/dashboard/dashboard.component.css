@@ -1,0 +1,31 @@
+/* Estilo base do card da transação */
+.card-transacao {
+  background: #ffffff; 
+  margin-bottom: 20px; 
+  padding: 20px; 
+  border-radius: 8px; 
+  border-bottom: 1px solid #e0e0e0; 
+  border-left: 5px solid; 
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  transition: all 0.3s ease; /* Suavidade na animação */
+}
+
+/* O efeito "Chique" quando passa o mouse por cima */
+.card-transacao:hover {
+  transform: translateY(-3px); /* Levanta o card levemente */
+  box-shadow: 0 8px 15px rgba(0,0,0,0.08); /* Aumenta a sombra */
+  border-bottom-color: transparent;
+}
+
+/* Esconde o botão de lixeira e só mostra ao passar o mouse (opcional, mas muito chique) */
+.btn-lixeira {
+  opacity: 0.3;
+  transition: all 0.2s;
+}
+
+.card-transacao:hover .btn-lixeira {
+  opacity: 1;
+}
