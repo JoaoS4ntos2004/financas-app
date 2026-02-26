@@ -1,9 +1,9 @@
 <main class="dashboard-wrapper">
   
   <header class="dash-header">
-    <h1>Controle Financeiro 💰</h1>
-    <div class="date-picker">
-      <input type="month" [(ngModel)]="mesAnoSelecionado" (ngModelChange)="filtrarPorMes()">
+    <h1>Dashboard 💰</h1>
+    <div class="filter-container">
+      <input type="month" class="modern-input" [(ngModel)]="mesAnoSelecionado" (ngModelChange)="filtrarPorMes()">
     </div>
   </header>
 
@@ -17,56 +17,64 @@
       <h3 class="kpi-value">{{ totalDespesas | currency:'BRL' }}</h3>
     </div>
     <div class="kpi-card saldo">
-      <span class="kpi-label">Saldo Atual</span>
+      <span class="kpi-label">Saldo</span>
       <h3 class="kpi-value">{{ saldoGeral | currency:'BRL' }}</h3>
     </div>
   </section>
 
-  <div class="grid-main">
-    <div class="chart-container">
+  <div class="main-layout">
+    <div class="card-white chart-box">
       <h3>🍕 Despesas por Categoria</h3>
-      <div class="canvas-box">
+      <div class="canvas-wrapper">
         <canvas id="canvasCategorias"></canvas>
       </div>
     </div>
 
-    <div class="action-column">
-      <div class="form-card">
-        <h3>Novo Lançamento</h3>
-        <input type="text" placeholder="Descrição" [(ngModel)]="novaTransacao.descricao">
-        <div class="row">
-          <input type="number" placeholder="Valor" [(ngModel)]="novaTransacao.valor">
-          <select [(ngModel)]="novaTransacao.tipo">
-            <option value="despesa">Despesa</option>
-            <option value="receita">Receita</option>
-          </select>
+    <div class="side-actions">
+      <div class="card-white">
+        <h3>✨ Novo Lançamento</h3>
+        <div class="form-stack">
+          <input type="text" class="modern-input" placeholder="Descrição" [(ngModel)]="novaTransacao.descricao">
+          <div class="form-row">
+            <input type="number" class="modern-input" placeholder="R$ 0,00" [(ngModel)]="novaTransacao.valor">
+            <select class="modern-select" [(ngModel)]="novaTransacao.tipo">
+              <option value="despesa">💸 Gasto</option>
+              <option value="receita">💰 Ganho</option>
+            </select>
+          </div>
+          <button (click)="adicionarTransacao()" class="btn-primary">Salvar</button>
         </div>
-        <button (click)="adicionarTransacao()" class="btn-add">Salvar</button>
+      </div>
+
+      <div class="card-white import-box">
+        <h3>📥 Importar CSV</h3>
+        <input type="file" (change)="onFileSelected($event)" class="file-input">
+        <button (click)="importarArquivo()" [disabled]="!arquivoSelecionado" class="btn-secondary">Processar Arquivo</button>
       </div>
     </div>
   </div>
 
-  <section class="list-section">
+  <section class="list-container">
     <div class="list-header">
       <h3>📋 Lançamentos</h3>
-      <select [(ngModel)]="categoriaSelecionada" (ngModelChange)="mudarCategoria()">
-        <option value="Todas">Todas</option>
+      <select class="modern-select small" [(ngModel)]="categoriaSelecionada" (ngModelChange)="mudarCategoria()">
+        <option value="Todas">Todas Categorias</option>
         @for (cat of categoriasDisponiveis; track cat) { <option [value]="cat">{{ cat }}</option> }
       </select>
     </div>
 
-    <div class="transaction-stack">
+    <div class="t-stack">
       @for (t of transacoesFiltradas; track t.id) {
         <div class="t-card" [class.t-receita]="t.tipo === 'receita'" [class.t-despesa]="t.tipo === 'despesa'">
-          <div class="t-main">
-            <span class="t-desc">{{ t.descricao }}</span>
-            <small class="t-meta">{{ t.data_transacao | date:'dd/MM' }} • {{ t.categoria }}</small>
+          <div class="t-info">
+            <span class="t-name">{{ t.descricao }}</span>
+            <small>{{ t.data_transacao | date:'dd/MM' }} • {{ t.categoria }}</small>
           </div>
-          <div class="t-right">
-            <span class="t-amount" [class.txt-receita]="t.tipo === 'receita'">
-              {{ t.tipo === 'despesa' ? '-' : '+' }} {{ t.valor | currency:'BRL' }}
+          <div class="t-price-box">
+            <span class="t-price" [class.txt-g]="t.tipo === 'receita'">
+              {{ t.valor | currency:'BRL' }}
             </span>
-            <button (click)="excluirTransacao(t.id)" class="btn-del">🗑️</button>
+            <button (click)="excluirTransacao(t.id)" class="btn-icon">🗑️</button>
           </div>
         </div>
       }
