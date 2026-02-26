@@ -229,9 +229,12 @@ export class AppComponent implements OnInit {
 
 
   calcularResumo() {
+    // 1. Zera os contadores
     this.totalReceitas = 0;
     this.totalDespesas = 0;
+    this.saldoGeral = 0;
 
+    // 2. Calcula Receitas e Despesas APENAS do mês filtrado (Cards Verde e Vermelho)
     for (let t of this.transacoesDoMes) {
       if (t.tipo === 'receita') {
         this.totalReceitas += t.valor;
@@ -240,7 +243,33 @@ export class AppComponent implements OnInit {
       }
     }
     
-    this.saldoGeral = this.totalReceitas - this.totalDespesas;
+    // 3. Calcula o Saldo Geral ACUMULADO (Card Azul)
+    if (this.mesAnoSelecionado) {
+      const [anoSel, mesSel] = this.mesAnoSelecionado.split('-');
+      
+      for (let t of this.transacoes) { // Usa a lista GERAL de transações
+        const d = this.parseDataSegura(t.data_transacao);
+        if (d) {
+          const anoTransacao = d.getFullYear();
+          const mesTransacao = d.getMonth() + 1;
+          
+          // Soma se a transação for de um mês anterior ou do próprio mês selecionado
+          if (anoTransacao < Number(anoSel) || (anoTransacao === Number(anoSel) && mesTransacao <= Number(mesSel))) {
+            if (t.tipo === 'receita') {
+              this.saldoGeral += t.valor;
+            } else if (t.tipo === 'despesa') {
+              this.saldoGeral -= t.valor;
+            }
+          }
+        }
+      }
+    } else {
+      // Se limpou o filtro (vendo todas as épocas), soma tudo
+      for (let t of this.transacoes) {
+        if (t.tipo === 'receita') this.saldoGeral += t.valor;
+        else this.saldoGeral -= t.valor;
+      }
+    }
   }
 
   atualizarGrafico() {

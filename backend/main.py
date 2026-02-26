@@ -114,10 +114,18 @@ def classificar_categoria(descricao: str, valor: float, tipo: str) -> str:
     # --- 1. TRANSFERÊNCIAS E INVESTIMENTOS ---
     if any(p in desc for p in ["CDB", "APLICACAO", "RESGATE", "PORQUINHO"]):
         return "Investimentos"
+        
     if "FATURA" in desc:
         return "Cartão de Crédito"
-    if any(p in desc for p in ["CERES FUNDACAO", "JOAO PEDRO FERNANDES SANT"]):
+        
+    # --- REGRA DE RENDAS E TRANSFERÊNCIAS ENTRE CONTAS ---
+    # Se ENTROU dinheiro da Ceres ou da sua outra conta, é Renda
+    if tipo == 'receita' and any(p in desc for p in ["CERES FUNDACAO", "JOAO PEDRO FERNANDES SANT"]):
         return "Salário/Renda"
+        
+    # Se SAIU dinheiro para a sua outra conta, é pagamento de contas/impostos
+    if tipo == 'despesa' and "JOAO PEDRO FERNANDES SANT" in desc:
+        return "Contas/Telefonia/Impostos"
         
     # --- 2. CONTAS FIXAS E SAÚDE ---
     if any(p in desc for p in ["TIM S A", "CLARO", "VIVO", "NEOENERGIA", "CAESB", "CONVENIO DETRAN"]):
@@ -143,7 +151,7 @@ def classificar_categoria(descricao: str, valor: float, tipo: str) -> str:
     
     # --- 4. REGRA DE FALLBACK ---
     if tipo == "receita":
-        return "Salário/Renda" if valor > 50 else "Reembolso"
+        return "Salário/Renda" if valor > 800 else "Reembolso"
     else:
         return "Pix/Transferência" if valor > 100 else "Consumo Diversos"
 
