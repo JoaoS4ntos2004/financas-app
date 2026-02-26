@@ -48,8 +48,16 @@
 
       <div class="card-white import-box">
         <h3>📥 Importar CSV</h3>
-        <input type="file" (change)="onFileSelected($event)" class="file-input">
-        <button (click)="importarArquivo()" [disabled]="!arquivoSelecionado" class="btn-secondary">Processar Arquivo</button>
+        <div class="file-area">
+          <label for="file-upload" class="custom-file-upload">
+            {{ arquivoSelecionado ? '📄 ' + arquivoSelecionado.name : '📁 Escolher Arquivo' }}
+          </label>
+          <input id="file-upload" type="file" (change)="onFileSelected($event)" accept=".csv">
+          
+          <button (click)="importarArquivo()" [disabled]="!arquivoSelecionado" class="btn-secondary">
+            Processar Arquivo
+          </button>
+        </div>
       </div>
     </div>
   </div>
