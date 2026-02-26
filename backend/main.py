@@ -10,6 +10,9 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, DateTime
 from sqlalchemy.orm import sessionmaker, Session, declarative_base
 from dotenv import load_dotenv
+from sqlalchemy import Column, Integer, String, Numeric
+from pydantic import BaseModel
+from typing import List
 
 # --- CONFIGURAÇÃO DO BANCO ---
 load_dotenv()
@@ -31,6 +34,13 @@ class Transacao(Base):
     data_transacao = Column(DateTime, default=datetime.utcnow)
     consolidado = Column(Boolean, default=False)
 
+class Orcamento(Base):
+    __tablename__ = "orcamentos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    categoria = Column(String(100), unique=True, nullable=False)
+    limite_mensal = Column(Numeric(10, 2), nullable=False)
+
 Base.metadata.create_all(bind=engine)
 
 # --- SCHEMAS DE VALIDAÇÃO (Pydantic) ---
@@ -40,6 +50,14 @@ class TransacaoCreate(BaseModel):
     valor: float
     tipo: str
     categoria: str = "Outros"
+
+class OrcamentoBase(BaseModel):
+    categoria: str
+    limite_mensal: float
+
+    class Config:
+        from_attributes = True # Se for Pydantic v2 (FastAPI mais recente)
+        # orm_mode = True      # Use este se for Pydantic v1
 
 # O que vamos devolver para o Front-end
 class TransacaoResponse(TransacaoCreate):
@@ -208,3 +226,24 @@ async def importar_extrato(file: UploadFile = File(...), db: Session = Depends(g
     db.commit()
     
     return {"mensagem": f"{transacoes_salvas} transações importadas com sucesso!"}
+
+# --- 3. ROTAS DE ORÇAMENTO ---
+@app.get("/orcamentos/", response_model=List[OrcamentoBase])
+def ler_orcamentos(db: Session = Depends(get_db)):
+    return db.query(Orcamento).all()
+
+@app.post("/orcamentos/")
+def salvar_orcamento(orcamento: OrcamentoBase, db: Session = Depends(get_db)):
+    # Busca se essa categoria já tem um limite salvo
+    db_orc = db.query(Orcamento).filter(Orcamento.categoria == orcamento.categoria).first()
+    
+    if db_orc:
+        # Se já existe, apenas atualiza o valor
+        db_orc.limite_mensal = orcamento.limite_mensal
+    else:
+        # Se não existe, cria um novo
+        db_orc = Orcamento(categoria=orcamento.categoria, limite_mensal=orcamento.limite_mensal)
+        db.add(db_orc)
+        
+    db.commit()
+    return {"mensagem": f"Orçamento de {orcamento.categoria} salvo com sucesso!"}
