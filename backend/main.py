@@ -161,9 +161,9 @@ def classificar_categoria(descricao: str, valor: float, tipo: str) -> str:
     if any(p in desc for p in ["DIRIJO", "TABACARIA"]):
         return "Tabaco"
     if any(p in desc for p in ["BIG BOX", "SUPERMERCADO", "PADARIA", "TERRA ALIMENTACAO", "REDE AQUI", "UNIAO"]):
-        return "Mercado/Padaria"
+        return "Alimentação"
     if any(p in desc for p in ["IFOOD", "IFD", "PIZZA", "CREPERIA", "SUSHILOKO", "GIRAFFAS", "BISTRO", "RESTAURANTE", "ALIMENTACAO", "SABOR"]):
-        return "Restaurante/Delivery"
+        return "Alimentação"
     if any(p in desc for p in ["CENTAURO", "AMERICANAS", "CACHOS", "LAVANDERIA"]):
         return "Compras/Variedades"
     
