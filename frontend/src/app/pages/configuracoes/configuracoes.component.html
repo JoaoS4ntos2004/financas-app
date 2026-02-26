@@ -1,1 +1,56 @@
-<p>configuracoes works!</p>
+<div style="max-width: 900px; margin: 0 auto;">
+  
+  <div style="margin-bottom: 30px;">
+    <h2 style="margin: 0; color: #1e293b; font-size: 1.8rem;">⚙️ Configurações</h2>
+    <p style="color: #64748b; margin: 5px 0 0 0;">Gerencie os limites do seu orçamento mensal.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+    
+    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+      <h3 style="margin-top: 0; color: #334155;">Definir Novo Limite</h3>
+      
+      <div style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #475569;">Categoria</label>
+        <input type="text" [(ngModel)]="novaMeta.categoria" placeholder="Ex: Lazer/Rolê" 
+               style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; box-sizing: border-box;">
+        <small style="color: #94a3b8;">Dica: Digite exatamente o nome que aparece nos seus lançamentos.</small>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #475569;">Limite Mensal (R$)</label>
+        <input type="number" [(ngModel)]="novaMeta.limite_mensal" placeholder="Ex: 630" 
+               style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; box-sizing: border-box;">
+      </div>
+
+      <button (click)="salvarMeta()" 
+              style="width: 100%; padding: 12px; background-color: #38bdf8; color: #0f172a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem;">
+        💾 Salvar Meta
+      </button>
+    </div>
+
+    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+      <h3 style="margin-top: 0; color: #334155;">Limites Atuais</h3>
+      
+      @if (orcamentosSalvos.length === 0) {
+        <p style="color: #94a3b8; font-style: italic;">Nenhuma meta configurada ainda.</p>
+      }
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        @for (orc of orcamentosSalvos; track orc.id) {
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background-color: #f8fafc; border-radius: 6px; border-left: 4px solid #38bdf8;">
+            <div>
+              <strong style="color: #334155; display: block;">{{ orc.categoria }}</strong>
+              <span style="color: #64748b; font-size: 0.9rem;">R$ {{ orc.limite_mensal | number:'1.2-2' }}</span>
+            </div>
+            
+            <button (click)="editarMeta(orc)" style="padding: 6px 10px; background: transparent; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; color: #64748b;">
+              ✏️ Editar
+            </button>
+          </div>
+        }
+      </div>
+
+    </div>
+  </div>
+</div>

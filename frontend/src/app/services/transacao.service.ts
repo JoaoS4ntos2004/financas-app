@@ -33,6 +33,13 @@ export class TransacaoService {
     return this.http.get<any[]>(urlOrcamentos);
   }
 
+  // Envia a meta (nova ou atualizada) para o Python salvar no banco
+  salvarOrcamento(orcamento: {categoria: string, limite_mensal: number}): Observable<any> {
+    const baseUrl = this.apiUrl.split('/transacoes')[0]; 
+    const urlFinal = `${baseUrl}/orcamentos/`;
+    return this.http.post(urlFinal, orcamento);
+  }
+
   // Já deixamos pronto para o futuro: criar nova transação
   criarTransacao(transacao: Transacao): Observable<Transacao> {
     return this.http.post<Transacao>(this.apiUrl, transacao);
