@@ -273,6 +273,13 @@ export class DashboardComponent implements OnInit {
   }
 
   atualizarGrafico() {
+    // --- 1. A TRAVA DE SEGURANÇA ---
+    const canvasExiste = document.getElementById('canvasCategorias');
+    if (!canvasExiste) {
+      return; // Aborta se o canvas não estiver na tela
+    }
+
+    // --- 2. O CÁLCULO E O GRÁFICO ---
     const despesas = this.transacoesDoMes.filter(t => t.tipo === 'despesa');
     const gastosPorCategoria: { [key: string]: number } = {};
     
