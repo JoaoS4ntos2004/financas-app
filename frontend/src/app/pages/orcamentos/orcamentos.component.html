@@ -1,1 +1,55 @@
-<p>orcamentos works!</p>
+<div style="max-width: 900px; margin: 0 auto;">
+  
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+    <div>
+      <h2 style="margin: 0; color: #1e293b; font-size: 1.8rem;">🎯 Metas e Orçamentos</h2>
+      <p style="color: #64748b; margin: 5px 0 0 0;">Acompanhe o consumo dos seus limites mensais.</p>
+    </div>
+    
+    <div>
+      <input type="month" [(ngModel)]="mesAnoSelecionado" (change)="carregarDados()"
+             style="padding: 10px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: bold; color: #334155; font-size: 1rem;">
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px;">
+    
+    @for (item of progressoCategorias; track item.categoria) {
+      <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; align-items: center;">
+          <h4 style="margin: 0; color: #334155; font-size: 1.1rem;">{{ item.categoria }}</h4>
+          
+          <span [style.color]="item.cor" style="font-weight: bold; font-size: 0.9rem;">
+            {{ item.percentualReal | number:'1.0-1' }}%
+          </span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; color: #64748b;">
+          <span>Gasto: R$ {{ item.gasto | number:'1.2-2' }}</span>
+          <span>Limite: R$ {{ item.limite | number:'1.2-2' }}</span>
+        </div>
+
+        <div style="width: 100%; background-color: #e2e8f0; border-radius: 8px; height: 12px; overflow: hidden;">
+          <div [style.width.%]="item.percentual" 
+               [style.background-color]="item.cor"
+               style="height: 100%; border-radius: 8px; transition: width 0.5s ease-in-out;">
+          </div>
+        </div>
+        
+        @if (item.percentualReal >= 100) {
+          <div style="margin-top: 10px; font-size: 0.8rem; color: #ef4444; font-weight: 500; text-align: right;">
+            ⚠️ Limite excedido!
+          </div>
+        }
+      </div>
+    }
+    
+    @if (progressoCategorias.length === 0) {
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
+        Nenhum orçamento configurado ou dados carregando...
+      </div>
+    }
+
+  </div>
+</div>

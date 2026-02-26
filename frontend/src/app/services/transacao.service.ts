@@ -25,6 +25,14 @@ export class TransacaoService {
     return this.http.get<Transacao[]>(this.apiUrl);
   }
 
+  // Busca as metas de gastos no back-end
+  getOrcamentos(): Observable<any[]> {
+    // Como a sua apiUrl provavelmente termina em '/transacoes' ou '/transacoes/', 
+    // nós trocamos a palavra para bater na rota certa
+    const urlOrcamentos = this.apiUrl.replace('transacoes', 'orcamentos');
+    return this.http.get<any[]>(urlOrcamentos);
+  }
+
   // Já deixamos pronto para o futuro: criar nova transação
   criarTransacao(transacao: Transacao): Observable<Transacao> {
     return this.http.post<Transacao>(this.apiUrl, transacao);
