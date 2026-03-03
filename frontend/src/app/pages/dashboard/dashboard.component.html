@@ -37,25 +37,31 @@
           <input type="text" class="modern-input" placeholder="O que você comprou?" [(ngModel)]="novaTransacao.descricao">
           
           <div class="form-row">
-            <input type="number" class="modern-input" placeholder="R$ 0,00" [(ngModel)]="novaTransacao.valor" style="flex: 1.5;">
+            <div style="flex: 1.5;">
+              <input type="number" class="modern-input" placeholder="R$ 0,00" [(ngModel)]="novaTransacao.valor">
+            </div>
             
-            <select class="modern-select" [(ngModel)]="novaTransacao.tipo" style="flex: 1;">
-              <option value="despesa">💸 Gasto</option>
-              <option value="receita">💰 Ganho</option>
-            </select>
+            <div style="flex: 1;">
+              <select class="modern-select" [(ngModel)]="novaTransacao.tipo">
+                <option value="despesa">💸 Gasto</option>
+                <option value="receita">💰 Ganho</option>
+              </select>
+            </div>
           </div>
 
-          <div class="form-row" *ngIf="novaTransacao.tipo === 'despesa'">
-            <select class="modern-select" [(ngModel)]="novaTransacao.categoria">
-              <option value="" disabled selected>🏷️ Selecione a Categoria</option>
-              @for (cat of categoriasDisponiveis; track cat) {
-                <option [value]="cat">{{ cat }}</option>
-              }
-              <option value="Outros">Outros</option>
-            </select>
-          </div>
+          @if (novaTransacao.tipo === 'despesa') {
+            <div class="form-row">
+              <select class="modern-select" [(ngModel)]="novaTransacao.categoria">
+                <option value="" disabled selected>🏷️ Selecione a Categoria</option>
+                @for (cat of categoriasDisponiveis; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+          }
           
-          <button (click)="adicionarTransacao()" class="btn-primary">Adicionar Agora</button>
+          <button (click)="adicionarTransacao()" class="btn-primary">Salvar Lançamento</button>
         </div>
       </div>
 

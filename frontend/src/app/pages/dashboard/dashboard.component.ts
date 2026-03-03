@@ -116,11 +116,18 @@ export class DashboardComponent implements OnInit {
       });
     }
 
-    // EXTRAI AS CATEGORIAS ÚNICAS DO MÊS PARA O FILTRO
-    const setCat = new Set(this.transacoesDoMes.map(t => t.categoria || 'Outros'));
-    this.categoriasDisponiveis = Array.from(setCat).sort();
+    // --- NOVA LÓGICA DE CATEGORIAS ---
+    // 1. Definimos as categorias que você sempre quer que apareçam (mesmo em meses vazios)
+    const categoriasFixas = ['Alimentação', 'Combustível', 'Tabaco', 'Lazer', 'Contas Fixas', 'Manutenção Moto', 'Investimentos'];
     
-    // Se mudou de mês e a categoria selecionada não existe nele, volta pra "Todas"
+    // 2. Extraímos as categorias que já existem nas transações deste mês
+    const categoriasNoMes = this.transacoesDoMes.map(t => t.categoria || 'Outros');
+
+    // 3. Unimos as duas listas em um Set para remover duplicatas e ordenamos
+    const combined = [...categoriasFixas, ...categoriasNoMes];
+    this.categoriasDisponiveis = Array.from(new Set(combined)).filter(c => c !== '').sort();
+    
+    // Se mudou de mês e a categoria selecionada não existe na lista atualizada, volta pra "Todas"
     if (this.categoriaSelecionada !== 'Todas' && !this.categoriasDisponiveis.includes(this.categoriaSelecionada)) {
       this.categoriaSelecionada = 'Todas';
     }

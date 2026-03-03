@@ -1,4 +1,7 @@
-.dashboard-wrapper { max-width: 1100px; margin: 0 auto; }
+.dashboard-wrapper { 
+  max-width: 1100px; 
+  margin: 0 auto; 
+}
 
 .dash-header {
   display: flex;
@@ -25,8 +28,20 @@
   border: 1px solid rgba(0,0,0,0.05);
 }
 
-.kpi-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; opacity: 0.7; }
-.kpi-value { margin: 0; font-size: 0.85rem; font-weight: 800; white-space: nowrap; }
+.kpi-label { 
+  font-size: 0.7rem; 
+  font-weight: 700; 
+  text-transform: uppercase; 
+  margin-bottom: 5px; 
+  opacity: 0.7; 
+}
+
+.kpi-value { 
+  margin: 0; 
+  font-size: 0.85rem; 
+  font-weight: 800; 
+  white-space: nowrap; 
+}
 
 .receita { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
 .despesa { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
@@ -36,14 +51,14 @@
 .main-layout {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
-  gap: 20px; /* Espaço entre gráfico e ações */
+  gap: 20px;
   margin-bottom: 30px;
 }
 
 .side-actions {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* CORREÇÃO: Dá espaço vertical entre Novo Lançamento e Importar CSV */
+  gap: 20px; /* Espaço entre Novo Lançamento e Importar CSV */
 }
 
 .card-white {
@@ -55,7 +70,7 @@
 }
 
 .chart-box {
-  min-height: 400px; /* Aumentado para equilibrar a altura com a coluna lateral */
+  min-height: 400px; 
 }
 
 .canvas-wrapper { height: 320px; }
@@ -72,19 +87,39 @@
   box-sizing: border-box;
 }
 
-/* Ajuste para que o formulário não fique muito "esticado" verticalmente */
+.modern-input:focus, .modern-select:focus {
+  border-color: #38bdf8;
+  background: white;
+}
+
+/* FORMULÁRIO E ESPAÇAMENTOS */
 .form-stack {
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Reduzi um pouco o espaço entre os campos */
+  gap: 15px; /* Aumentado para evitar colisão vertical entre campos */
 }
 
-/* Garante que o select de categoria ocupe a linha toda */
+.form-row {
+  display: flex;
+  gap: 12px; /* Espaço horizontal entre campos na mesma linha */
+}
+
+/* Garante que o select ocupe a linha toda quando necessário */
 .form-row select {
   width: 100%;
 }
 
-.btn-primary { background: #10b981; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.btn-primary { 
+  background: #10b981; 
+  color: white; 
+  border: none; 
+  padding: 14px; 
+  border-radius: 10px; 
+  font-weight: bold; 
+  cursor: pointer; 
+  transition: 0.2s; 
+}
+
 .btn-primary:hover { background: #059669; }
 
 /* ESTILIZAÇÃO DO INPUT DE ARQUIVO */
@@ -95,7 +130,7 @@
 }
 
 input[type="file"] {
-  display: none; /* Esconde o botão feio do HTML puro */
+  display: none; 
 }
 
 .custom-file-upload {
@@ -115,8 +150,20 @@ input[type="file"] {
   background: #e2e8f0;
 }
 
-.btn-secondary { background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-.btn-secondary:disabled { background: #94a3b8; cursor: not-allowed; }
+.btn-secondary { 
+  background: #3b82f6; 
+  color: white; 
+  border: none; 
+  padding: 12px; 
+  border-radius: 10px; 
+  font-weight: bold; 
+  cursor: pointer; 
+}
+
+.btn-secondary:disabled { 
+  background: #94a3b8; 
+  cursor: not-allowed; 
+}
 
 /* LISTA */
 .list-container { margin-top: 20px; }
@@ -130,11 +177,21 @@ input[type="file"] {
   align-items: center;
   border-left: 5px solid #cbd5e1;
 }
+
 .t-receita { border-left-color: #10b981; }
 .t-despesa { border-left-color: #ef4444; }
+
 .t-price { font-weight: 800; margin-right: 10px; }
 .txt-g { color: #059669; }
-.btn-icon { background: #fee2e2; border: none; padding: 8px; border-radius: 8px; color: #dc2626; cursor: pointer; }
+
+.btn-icon { 
+  background: #fee2e2; 
+  border: none; 
+  padding: 8px; 
+  border-radius: 8px; 
+  color: #dc2626; 
+  cursor: pointer; 
+}
 
 /* RESPONSIVIDADE */
 @media (max-width: 768px) {
@@ -142,6 +199,11 @@ input[type="file"] {
   .dash-header h1 { font-size: 1.3rem; }
   .kpi-value { font-size: 0.85rem; }
   .chart-box { min-height: auto; }
+  
+  .form-row {
+    flex-direction: row; /* Mantém os campos curtos lado a lado no mobile */
+    gap: 8px;
+  }
 }
 
 @media (min-width: 1024px) {
