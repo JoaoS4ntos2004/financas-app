@@ -47,12 +47,16 @@ export class DashboardComponent implements OnInit {
     categoria: ''
   };
 
+  categoriasFixas: string[] = ['Alimentação', 'Combustível', 'Tabaco', 'Lazer', 'Contas Fixas', 'Manutenção Moto', 'Investimentos'];
+
   ngOnInit() {
     // Define o mês atual como padrão (ex: "2026-02")
     const hoje = new Date();
     const ano = hoje.getFullYear();
     const mes = String(hoje.getMonth() + 1).padStart(2, '0');
     this.mesAnoSelecionado = `${ano}-${mes}`;
+
+    this.categoriasDisponiveis = [...this.categoriasFixas].sort();
 
     this.carregarTransacoes();
   }
@@ -116,17 +120,16 @@ export class DashboardComponent implements OnInit {
       });
     }
 
-    // --- NOVA LÓGICA DE CATEGORIAS ---
-    // 1. Definimos as categorias que você sempre quer que apareçam (mesmo em meses vazios)
-    const categoriasFixas = ['Alimentação', 'Combustível', 'Tabaco', 'Lazer', 'Contas Fixas', 'Manutenção Moto', 'Investimentos'];
+    // Lógica de Categorias otimizada
+    const categoriasNoMes = this.transacoesDoMes.map(t => t.categoria).filter(c => c);
     
-    // 2. Extraímos as categorias que já existem nas transações deste mês
-    const categoriasNoMes = this.transacoesDoMes.map(t => t.categoria || 'Outros');
-
-    // 3. Unimos as duas listas em um Set para remover duplicatas e ordenamos
-    const combined = [...categoriasFixas, ...categoriasNoMes];
-    this.categoriasDisponiveis = Array.from(new Set(combined)).filter(c => c !== '').sort();
+    // Combina as fixas da classe com as que existem no mês
+    const combined = [...this.categoriasFixas, ...categoriasNoMes];
     
+    // Remove duplicatas, remove valores vazios e ordena
+    this.categoriasDisponiveis = Array.from(new Set(combined))
+    .filter(c => c && c.trim() !== '')
+    .sort();
     // Se mudou de mês e a categoria selecionada não existe na lista atualizada, volta pra "Todas"
     if (this.categoriaSelecionada !== 'Todas' && !this.categoriasDisponiveis.includes(this.categoriaSelecionada)) {
       this.categoriaSelecionada = 'Todas';
