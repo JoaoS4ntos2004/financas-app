@@ -47,8 +47,21 @@ export class DashboardComponent implements OnInit {
     categoria: ''
   };
 
-  categoriasFixas: string[] = ['Alimentação', 'Combustível', 'Tabaco', 'Lazer', 'Contas Fixas', 'Manutenção Moto', 'Investimentos'];
-
+  categoriasFixas: string[] = [
+    'Alimentação',
+    'Combustível',
+    'Tabaco',
+    'Cerveja/Rolê',
+    'Contas/Telefonia/Impostos',
+    'Transporte/App',
+    'Farmácia/Saúde',
+    'Compras/Variedades',
+    'Consumo Diversos',
+    'Pix/Transferência',
+    'Salário/Renda',
+    'Reembolso'
+  ];
+  
   ngOnInit() {
     // Define o mês atual como padrão (ex: "2026-02")
     const hoje = new Date();
