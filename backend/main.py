@@ -97,11 +97,20 @@ def criar_transacao(transacao: TransacaoCreate, db: Session = Depends(get_db)):
     if transacao.tipo not in ['receita', 'despesa']:
         raise HTTPException(status_code=400, detail="Tipo deve ser 'receita' ou 'despesa'")
     
+    # LÓGICA INTELIGENTE:
+    # Se o usuário escolheu uma categoria (diferente de "Outros"), usamos ela.
+    # Se ele mandou "Outros" ou deixou vazio, tentamos classificar pela descrição.
+    categoria_final = transacao.categoria
+    if categoria_final == "Outros" or not categoria_final:
+        categoria_final = classificar_categoria(transacao.descricao, transacao.valor, transacao.tipo)
+
     nova_transacao = Transacao(
         descricao=transacao.descricao,
         valor=transacao.valor,
-        tipo=transacao.tipo
+        tipo=transacao.tipo,
+        categoria=categoria_final  # <--- AGORA ESTAMOS SALVANDO A CATEGORIA!
     )
+    
     db.add(nova_transacao)
     db.commit()
     db.refresh(nova_transacao)
