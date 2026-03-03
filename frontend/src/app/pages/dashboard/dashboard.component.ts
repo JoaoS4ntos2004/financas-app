@@ -9,7 +9,7 @@ Chart.register(...registerables);
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './dashboard.component.html',
+  templateUrl: './dashboard.compone nt.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
@@ -43,7 +43,8 @@ export class DashboardComponent implements OnInit {
   novaTransacao: Transacao = {
     descricao: '',
     valor: 0,
-    tipo: 'despesa'
+    tipo: 'despesa',
+    categoria: ''
   };
 
   ngOnInit() {
@@ -174,10 +175,15 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
+    if (this.novaTransacao.tipo === 'despesa' && !this.novaTransacao.categoria) {
+      alert('Por favor, selecione uma categoria para este gasto!');
+      return;
+    }
+
     this.transacaoService.criarTransacao(this.novaTransacao).subscribe({
       next: (resultado) => {
         console.log('Salvo com sucesso no banco!', resultado);
-        this.novaTransacao = { descricao: '', valor: 0, tipo: 'despesa' };
+        this.novaTransacao = { descricao: '', valor: 0, tipo: 'despesa',categoria: '' };
         this.carregarTransacoes();
       },
       error: (erro) => {

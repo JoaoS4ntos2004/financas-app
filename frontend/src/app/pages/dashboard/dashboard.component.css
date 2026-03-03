@@ -72,8 +72,17 @@
   box-sizing: border-box;
 }
 
-.form-stack { display: flex; flex-direction: column; gap: 12px; }
-.form-row { display: flex; gap: 10px; }
+/* Ajuste para que o formulário não fique muito "esticado" verticalmente */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Reduzi um pouco o espaço entre os campos */
+}
+
+/* Garante que o select de categoria ocupe a linha toda */
+.form-row select {
+  width: 100%;
+}
 
 .btn-primary { background: #10b981; color: white; border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
 .btn-primary:hover { background: #059669; }

@@ -34,15 +34,28 @@
       <div class="card-white">
         <h3>✨ Novo Lançamento</h3>
         <div class="form-stack">
-          <input type="text" class="modern-input" placeholder="Descrição" [(ngModel)]="novaTransacao.descricao">
+          <input type="text" class="modern-input" placeholder="O que você comprou?" [(ngModel)]="novaTransacao.descricao">
+          
           <div class="form-row">
-            <input type="number" class="modern-input" placeholder="R$ 0,00" [(ngModel)]="novaTransacao.valor">
-            <select class="modern-select" [(ngModel)]="novaTransacao.tipo">
+            <input type="number" class="modern-input" placeholder="R$ 0,00" [(ngModel)]="novaTransacao.valor" style="flex: 1.5;">
+            
+            <select class="modern-select" [(ngModel)]="novaTransacao.tipo" style="flex: 1;">
               <option value="despesa">💸 Gasto</option>
               <option value="receita">💰 Ganho</option>
             </select>
           </div>
-          <button (click)="adicionarTransacao()" class="btn-primary">Salvar</button>
+
+          <div class="form-row" *ngIf="novaTransacao.tipo === 'despesa'">
+            <select class="modern-select" [(ngModel)]="novaTransacao.categoria">
+              <option value="" disabled selected>🏷️ Selecione a Categoria</option>
+              @for (cat of categoriasDisponiveis; track cat) {
+                <option [value]="cat">{{ cat }}</option>
+              }
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+          
+          <button (click)="adicionarTransacao()" class="btn-primary">Adicionar Agora</button>
         </div>
       </div>
 
