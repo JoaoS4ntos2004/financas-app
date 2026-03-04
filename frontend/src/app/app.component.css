@@ -1,191 +1,123 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-
 :root {
-  --primary: #10b981; /* Esmeralda */
-  --bg-dark: #0f172a;
-  --bg-light: #f8fafc;
-  --text-main: #1e293b;
-  --text-dim: #64748b;
-  --glass: rgba(255, 255, 255, 0.7);
+  --primary: #10b981;
+  --text-dark: #0f172a;   /* Texto quase preto para leitura no PC */
+  --text-light: #f8fafc;  /* Texto claro para o mobile */
+  --sidebar-bg: #ffffff;
+  --mobile-bg: #1e293b;   /* Azul bem escuro para o mobile */
+  --accent-soft: #ecfdf5;
 }
-
-* { box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
 .app-shell {
   display: flex;
   height: 100vh;
-  background-color: var(--bg-light);
+  background-color: #f1f5f9;
 }
 
-/* SIDEBAR DESKTOP */
+/* --- SIDEBAR DESKTOP --- */
 .desktop-sidebar {
   width: 280px;
-  background: white;
+  background: var(--sidebar-bg);
   border-right: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
-  padding: 40px 24px;
-  z-index: 10;
+  padding: 30px 20px;
 }
 
 .brand-area {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 50px;
+  gap: 12px;
+  margin-bottom: 40px;
+  padding-left: 10px;
 }
 
 .logo-blob {
-  width: 45px;
-  height: 45px;
-  background: linear-gradient(135deg, var(--primary), #059669);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 800;
-  font-size: 1.5rem;
-  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+  width: 40px; height: 40px;
+  background: var(--primary);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: 1.2rem;
 }
 
-.brand-text .main { display: block; font-weight: 800; font-size: 1.2rem; color: var(--bg-dark); letter-spacing: -0.5px; }
-.brand-text .sub { font-size: 0.75rem; color: var(--text-dim); font-weight: 600; }
+.brand-text .main { display: block; font-weight: 800; color: var(--text-dark); font-size: 1.1rem; }
+.brand-text .sub { font-size: 0.7rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
 
-.nav-menu { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+.nav-menu { display: flex; flex-direction: column; gap: 8px; }
 
 .nav-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
   text-decoration: none;
-  color: var(--text-dim);
+  color: #475569; /* Cinza escuro legível */
   font-weight: 600;
   border-radius: 12px;
-  position: relative;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s;
 }
 
-.nav-item:hover {
-  background: #f1f5f9;
-  color: var(--bg-dark);
-}
+.nav-item:hover { background: #f8fafc; color: var(--text-dark); }
 
-.icon-box {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8fafc;
-  border-radius: 8px;
-  font-size: 1.1rem;
-}
-
-/* ESTADO ATIVO SIDEBAR */
+/* Item Ativo PC */
 .active-link {
-  background: #ecfdf5 !important;
+  background: var(--accent-soft) !important;
   color: var(--primary) !important;
 }
-
-.active-link .icon-box { background: white; }
-
-.active-indicator {
-  position: absolute;
-  right: -24px;
-  width: 4px;
-  height: 20px;
-  background: var(--primary);
-  border-radius: 4px 0 0 4px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.active-link .active-indicator { opacity: 1; }
 
 .user-profile {
   margin-top: auto;
   padding: 15px;
   background: #f8fafc;
   border-radius: 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: flex; align-items: center; gap: 12px;
 }
 
 .user-avatar {
-  width: 40px; height: 40px;
-  background: var(--bg-dark);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center; justify-content: center;
-  font-weight: 800; font-size: 0.8rem;
+  width: 35px; height: 35px;
+  background: var(--text-dark);
+  color: white; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.7rem;
 }
 
-.user-name strong { display: block; font-size: 0.85rem; color: var(--bg-dark); }
-.user-name span { font-size: 0.7rem; color: var(--text-dim); }
+.user-name strong { display: block; font-size: 0.8rem; color: var(--text-dark); }
+.user-name span { font-size: 0.65rem; color: #64748b; }
 
-/* CONTEÚDO */
+/* --- CONTEÚDO --- */
 .main-stage {
   flex: 1;
   overflow-y: auto;
-  position: relative;
-}
-
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 40px;
 }
 
-/* MOBILE TAB BAR */
+/* --- MOBILE TAB BAR --- */
 .mobile-tabbar { display: none; }
 
 @media (max-width: 768px) {
   .desktop-sidebar { display: none; }
-  .page-container { padding: 20px 20px 100px 20px; }
+  .main-stage { padding: 20px 20px 100px 20px; }
 
   .mobile-tabbar {
     display: flex;
     position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    height: 70px;
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(12px);
-    border-radius: 24px;
+    bottom: 0; left: 0; right: 0;
+    height: 75px;
+    background: var(--mobile-bg);
+    border-top: 1px solid rgba(255,255,255,0.1);
     z-index: 1000;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-    padding: 0 10px;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .mobile-tabbar a {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     text-decoration: none;
-    color: #94a3b8;
-    transition: all 0.3s;
+    color: #94a3b8; /* Cinza claro para não ofuscar */
   }
 
-  .tab-icon { font-size: 1.4rem; }
-  .tab-label { font-size: 0.65rem; font-weight: 700; margin-top: 4px; }
+  .tab-icon { font-size: 1.3rem; margin-bottom: 2px; }
+  .tab-label { font-size: 0.65rem; font-weight: 700; color: #94a3b8; }
 
-  .active-tab {
-    color: var(--primary) !important;
-    transform: translateY(-5px);
-  }
-
-  .active-tab::after {
-    content: '';
-    width: 5px; height: 5px;
-    background: var(--primary);
-    border-radius: 50%;
-    margin-top: 5px;
-  }
+  /* Item Ativo Mobile */
+  .active-tab { color: var(--primary) !important; }
+  .active-tab .tab-label { color: var(--primary) !important; }
 }

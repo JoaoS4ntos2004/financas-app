@@ -1,9 +1,7 @@
 <div class="app-shell">
   <aside class="desktop-sidebar">
     <div class="brand-area">
-      <div class="logo-blob">
-        <span>$</span>
-      </div>
+      <div class="logo-blob">$</div>
       <div class="brand-text">
         <span class="main">Finance</span>
         <span class="sub">Control Pro</span>
@@ -12,24 +10,20 @@
 
     <nav class="nav-menu">
       <a routerLink="/dashboard" routerLinkActive="active-link" class="nav-item">
-        <div class="icon-box">📊</div>
-        <span>Visão Geral</span>
-        <div class="active-indicator"></div>
+        <span class="icon">📊</span>
+        <span class="nav-label">Visão Geral</span>
       </a>
       <a routerLink="/orcamentos" routerLinkActive="active-link" class="nav-item">
-        <div class="icon-box">🎯</div>
-        <span>Planejamento</span>
-        <div class="active-indicator"></div>
+        <span class="icon">🎯</span>
+        <span class="nav-label">Planejamento</span>
       </a>
       <a routerLink="/estatisticas" routerLinkActive="active-link" class="nav-item">
-        <div class="icon-box">📈</div>
-        <span>Inteligência</span>
-        <div class="active-indicator"></div>
+        <span class="icon">📈</span>
+        <span class="nav-label">Inteligência</span>
       </a>
       <a routerLink="/configuracoes" routerLinkActive="active-link" class="nav-item">
-        <div class="icon-box">⚙️</div>
-        <span>Ajustes</span>
-        <div class="active-indicator"></div>
+        <span class="icon">⚙️</span>
+        <span class="nav-label">Ajustes</span>
       </a>
     </nav>
 
@@ -37,15 +31,13 @@
       <div class="user-avatar">JP</div>
       <div class="user-name">
         <strong>João Pedro</strong>
-        <span>Premium Account</span>
+        <span>Premium</span>
       </div>
     </div>
   </aside>
 
   <main class="main-stage">
-    <div class="page-container">
-      <router-outlet></router-outlet>
-    </div>
+    <router-outlet></router-outlet>
   </main>
 
   <nav class="mobile-tabbar">
