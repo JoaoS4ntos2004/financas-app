@@ -116,6 +116,11 @@ def criar_transacao(transacao: TransacaoCreate, db: Session = Depends(get_db)):
     db.refresh(nova_transacao)
     return nova_transacao
 
+
+@app.get("/", methods=["GET", "HEAD"])
+async def root():
+    return {"status": "online"}
+
 @app.get("/transacoes/", response_model=List[TransacaoResponse])
 def listar_transacoes(skip: int = 0, limit: int = 10000, db: Session = Depends(get_db)):
     transacoes = db.query(Transacao).offset(skip).limit(limit).all()
