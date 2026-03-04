@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TransacaoService, Transacao } from '../../services/transacao.service';
 import { Chart, registerables } from 'chart.js';
 import { PrivacyCurrencyPipe } from '../../services/privacy-currency.pipe';
+import { PrivacyService } from '../../services/privacy.service'; 
 Chart.register(...registerables);
 
 @Component({
@@ -15,7 +16,7 @@ Chart.register(...registerables);
 })
 export class DashboardComponent implements OnInit {
   transacoes: Transacao[] = [];
-  public privacyService = inject(PrivacyCurrencyPipe);
+  public privacyService = inject(PrivacyService);
   private transacaoService = inject(TransacaoService);
   carregando: boolean = true;
 
