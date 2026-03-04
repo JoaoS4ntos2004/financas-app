@@ -26,6 +26,9 @@
         <span class="label">Ajustes</span>
       </a>
       <button (click)="togglePrivacidade()" class="btn-privacy">
+        <span style="font-size: 0.9rem; margin-right: 10px; font-weight: 600; color: #64748b;">
+          {{ privacyService.isFurtivo() ? 'Mostrar valores' : 'Ocultar valores' }}
+        </span>
         {{ privacyService.isFurtivo() ? '👁️' : '🙈' }}
       </button>
     </nav>
@@ -42,6 +45,9 @@
       <a routerLink="/estatisticas" routerLinkActive="active-m">📊</a>
       <a routerLink="/configuracoes" routerLinkActive="active-m">⚙️</a>
       <button (click)="togglePrivacidade()" class="btn-privacy">
+        <span style="font-size: 0.9rem; margin-right: 10px; font-weight: 600; color: #64748b;">
+          {{ privacyService.isFurtivo() ? 'Mostrar valores' : 'Ocultar valores' }}
+        </span>
         {{ privacyService.isFurtivo() ? '👁️' : '🙈' }}
       </button>
     </div>
