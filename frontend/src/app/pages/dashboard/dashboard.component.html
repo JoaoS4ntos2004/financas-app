@@ -22,15 +22,23 @@
   <section class="kpi-grid">
     <div class="kpi-card receita">
       <span class="kpi-label">Receitas</span>
-      <h3 class="kpi-value">{{ totalReceitas | currency:'BRL' }}</h3>
+      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()">
+        {{ totalReceitas | privacyCurrency }}
+      </h3>
     </div>
+
     <div class="kpi-card despesa">
       <span class="kpi-label">Despesas</span>
-      <h3 class="kpi-value">{{ totalDespesas | currency:'BRL' }}</h3>
+      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()">
+        {{ totalDespesas | privacyCurrency }}
+      </h3>
     </div>
+
     <div class="kpi-card saldo">
       <span class="kpi-label">Saldo</span>
-      <h3 class="kpi-value">{{ saldoGeral | currency:'BRL' }}</h3>
+      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()">
+        {{ saldoGeral | privacyCurrency }}
+      </h3>
     </div>
   </section>
 

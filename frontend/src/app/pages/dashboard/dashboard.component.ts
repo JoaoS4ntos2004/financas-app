@@ -3,17 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransacaoService, Transacao } from '../../services/transacao.service';
 import { Chart, registerables } from 'chart.js';
+import { PrivacyCurrencyPipe } from '../../services/privacy-currency.pipe';
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PrivacyCurrencyPipe],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
   transacoes: Transacao[] = [];
+  public privacyService = inject(PrivacyCurrencyPipe);
   private transacaoService = inject(TransacaoService);
   carregando: boolean = true;
 

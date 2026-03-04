@@ -25,6 +25,9 @@
         <span class="icon">⚙️</span> 
         <span class="label">Ajustes</span>
       </a>
+      <button (click)="togglePrivacidade()" class="btn-privacy">
+        {{ privacyService.isFurtivo() ? '👁️' : '🙈' }}
+      </button>
     </nav>
   </aside>
 
@@ -38,6 +41,9 @@
       <a routerLink="/orcamentos" routerLinkActive="active-m">🎯</a>
       <a routerLink="/estatisticas" routerLinkActive="active-m">📊</a>
       <a routerLink="/configuracoes" routerLinkActive="active-m">⚙️</a>
+      <button (click)="togglePrivacidade()" class="btn-privacy">
+        {{ privacyService.isFurtivo() ? '👁️' : '🙈' }}
+      </button>
     </div>
   </nav>
 </div>
