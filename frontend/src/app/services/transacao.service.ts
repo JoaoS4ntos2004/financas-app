@@ -1,8 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 
-// Define o formato dos dados que vêm do Python
 export interface Transacao {
   id?: number;
   descricao: string;
@@ -18,49 +17,70 @@ export interface Transacao {
 })
 export class TransacaoService {
   private apiUrl = 'https://financas-app-niso.onrender.com/transacoes';
-  private http = inject(HttpClient); // Injeta o módulo HTTP
+  private http = inject(HttpClient);
 
-  // Busca a lista de transações no Back-end
+  // --- MEMÓRIA CACHE ---
+  private cacheTransacoes: Transacao[] | null = null;
+  private cacheOrcamentos: any[] | null = null;
+
+  // Busca a lista de transações com lógica de Cache
   getTransacoes(): Observable<Transacao[]> {
-    return this.http.get<Transacao[]>(this.apiUrl);
+    if (this.cacheTransacoes) {
+      return of(this.cacheTransacoes); // Retorna instantâneo
+    }
+    return this.http.get<Transacao[]>(this.apiUrl).pipe(
+      tap(dados => this.cacheTransacoes = dados) // Guarda no cofre
+    );
   }
 
-  // Busca as metas de gastos no back-end
   getOrcamentos(): Observable<any[]> {
-    // Como a sua apiUrl provavelmente termina em '/transacoes' ou '/transacoes/', 
-    // nós trocamos a palavra para bater na rota certa
+    if (this.cacheOrcamentos) {
+      return of(this.cacheOrcamentos);
+    }
     const urlOrcamentos = this.apiUrl.replace('transacoes', 'orcamentos');
-    return this.http.get<any[]>(urlOrcamentos);
+    return this.http.get<any[]>(urlOrcamentos).pipe(
+      tap(dados => this.cacheOrcamentos = dados)
+    );
   }
 
-  // Envia a meta (nova ou atualizada) para o Python salvar no banco
+  // --- MÉTODOS DE LIMPEZA (Invalidar Cache) ---
+  // Sempre que algo muda no banco, o cache precisa morrer
+  limparCacheTransacoes() { this.cacheTransacoes = null; }
+  limparCacheOrcamentos() { this.cacheOrcamentos = null; }
+
+  // --- MÉTODOS DE ESCRITA ---
   salvarOrcamento(orcamento: {categoria: string, limite_mensal: number}): Observable<any> {
     const baseUrl = this.apiUrl.split('/transacoes')[0]; 
     const urlFinal = `${baseUrl}/orcamentos/`;
+    this.limparCacheOrcamentos(); // Invalida cache para a próxima leitura
     return this.http.post(urlFinal, orcamento);
   }
 
   excluirOrcamento(categoria: string): Observable<any> {
     const baseUrl = this.apiUrl.split('/transacoes')[0]; 
     const urlFinal = `${baseUrl}/orcamentos/${categoria}`;
+    this.limparCacheOrcamentos();
     return this.http.delete(urlFinal);
   }
 
-  // Já deixamos pronto para o futuro: criar nova transação
   criarTransacao(transacao: Transacao): Observable<Transacao> {
+    this.limparCacheTransacoes();
     return this.http.post<Transacao>(this.apiUrl, transacao);
   }
 
   deletarTransacao(id: number): Observable<any> {
-    // Adicionamos a barra entre a URL e o ID
+    this.limparCacheTransacoes();
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   importarExtratoCSV(arquivo: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('file', arquivo);
-    
-    // Adicionamos a barra antes de 'importar/'
-    return this.http.post(`${this.apiUrl}/importar/`, formData);
-  }
+  this.limparCacheTransacoes(); // Invalida o cache
+  
+  const formData = new FormData(); 
+  
+  formData.append('file', arquivo);
+  
+  // Passamos o formData para o POST
+  return this.http.post(`${this.apiUrl}/importar/`, formData);
+}
 }
