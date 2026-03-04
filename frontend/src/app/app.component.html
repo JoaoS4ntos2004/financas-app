@@ -1,14 +1,33 @@
 <div class="app-container">
   <nav class="sidebar">
     <div class="logo">
-      <h2>FinanceApp 💰</h2>
-      <p>João Pedro</p>
+      <div class="brand">
+        <span class="logo-text">Finance</span><span class="logo-accent">App</span>
+        <span class="emoji">💰</span>
+      </div>
+      <div class="user-badge">
+        <div class="avatar">JP</div>
+        <span>João Pedro</span>
+      </div>
     </div>
+
     <div class="menu-links">
-      <a routerLink="/dashboard" routerLinkActive="ativo">📊 Dashboard</a>
-      <a routerLink="/orcamentos" routerLinkActive="ativo">🎯 Metas</a>
-      <a routerLink="/estatisticas" routerLinkActive="ativo">📈 Estatísticas</a>
-      <a routerLink="/configuracoes" routerLinkActive="ativo">⚙️ Ajustes</a>
+      <a routerLink="/dashboard" routerLinkActive="ativo">
+        <span class="icon">📊</span> Dashboard
+      </a>
+      <a routerLink="/orcamentos" routerLinkActive="ativo">
+        <span class="icon">🎯</span> Minhas Metas
+      </a>
+      <a routerLink="/estatisticas" routerLinkActive="ativo">
+        <span class="icon">📈</span> Estatísticas
+      </a>
+      <a routerLink="/configuracoes" routerLinkActive="ativo">
+        <span class="icon">⚙️</span> Ajustes
+      </a>
+    </div>
+    
+    <div class="sidebar-footer">
+      <p>v1.2.0 - 2026</p>
     </div>
   </nav>
 

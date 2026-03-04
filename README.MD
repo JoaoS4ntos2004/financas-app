@@ -32,3 +32,6 @@ A inteligência do negócio. A API que processa as regras e se comunica com o ba
 A interface do usuário. Consome a API do Render para exibir os dados de forma fluida e reativa.
 * **Painel de Controle (Dashboard):** [vercel.com/dashboard](https://vercel.com/dashboard)
 * **Link da Aplicação:** [https://financas-app-rho.vercel.app/p](https://financas-app-rho.vercel.app/)
+
+### 4. UpTimer Bot: Mantém a aplicação ativa em caso de ociosodade
+* **Painel de Controle (Dashboard):** [https://dashboard.uptimerobot.com/monitors/802480041] (https://dashboard.uptimerobot.com/monitors/802480041) 
