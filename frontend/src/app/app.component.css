@@ -96,11 +96,16 @@
 
   .mobile-nav-inner {
     display: flex;
-    background: var(--mobile-nav-bg);
+    /* Alterado: background agora tem opacidade e blur */
+    background: rgba(30, 41, 59, 0.95); 
+    backdrop-filter: blur(10px); /* O "pulo do gato": desfoca o que passa atrás */
+    -webkit-backdrop-filter: blur(10px); /* Suporte para Safari/iOS */
+    
     padding: 10px 25px;
-    border-radius: 30px; /* Bordas arredondadas estilo "pílula" */
+    border-radius: 30px;
     gap: 35px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4); /* Sombra mais forte para separar do fundo */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Bordinha fina para brilho lateral */
   }
 
   .mobile-nav-inner a {
