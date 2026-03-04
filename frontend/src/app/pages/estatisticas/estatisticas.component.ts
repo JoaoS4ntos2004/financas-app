@@ -23,7 +23,11 @@ export class EstatisticasComponent implements OnInit {
 
   comparativoMetas: any[] = [];
   limiteDiarioSugerido: number = 0;
-    diasRestantes: number = 0;
+  diasRestantes: number = 0;
+
+  indiceSobrevivencia: number = 0; // 0 a 100
+  statusSobrevivencia: string = '';
+  valorFaltanteOuSobra: number = 0;
   
   // Métricas Calculadas
   mediaGastosMensal: number = 0;
@@ -45,8 +49,33 @@ export class EstatisticasComponent implements OnInit {
 
   gerarRelatorios() {
     this.calcularMetricasPrincipais();
-    this.calcularRadarOrcamento(); // Nova função
+    this.calcularRadarOrcamento(); 
+    this.calcularIndiceSobrevivencia();
     setTimeout(() => this.renderizarGraficoTendencia(), 100);
+  }
+
+  calcularIndiceSobrevivencia() {
+    const receitaTotal = this.transacoes
+      .filter(t => t.tipo === 'receita' && this.isMesAtual(t.data_transacao))
+      .reduce((acc, t) => acc + t.valor, 0);
+
+    // Se não houver receita lançada ainda, não fazemos o cálculo
+    if (receitaTotal === 0) {
+      this.statusSobrevivencia = 'Sem dados de receita';
+      return;
+    }
+
+    // O índice é a relação entre o que vai gastar e o que ganhou
+    this.indiceSobrevivencia = (this.projecaoMesAtual / receitaTotal) * 100;
+    this.valorFaltanteOuSobra = receitaTotal - this.projecaoMesAtual;
+
+    if (this.indiceSobrevivencia <= 80) {
+      this.statusSobrevivencia = 'Zona Segura ✅';
+    } else if (this.indiceSobrevivencia <= 100) {
+      this.statusSobrevivencia = 'Atenção Limite ⚠️';
+    } else {
+      this.statusSobrevivencia = 'Déficit Projetado 🚨';
+    }
   }
 
   private calcularRadarOrcamento() {
@@ -107,6 +136,12 @@ export class EstatisticasComponent implements OnInit {
     const diaAtual = hoje.getDate();
     const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
     this.projecaoMesAtual = (gastosMesAtual / diaAtual) * ultimoDia;
+  }
+
+  getCorIndice() {
+    if (this.indiceSobrevivencia <= 80) return '#10b981'; // Verde
+    if (this.indiceSobrevivencia <= 100) return '#f59e0b'; // Laranja
+    return '#ef4444'; // Vermelho
   }
 
   renderizarGraficoTendencia() {

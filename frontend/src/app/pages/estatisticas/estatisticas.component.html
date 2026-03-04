@@ -7,6 +7,26 @@
       <p class="hint">Para os próximos {{ diasRestantes }} dias</p>
     </div>
 
+    <div class="survival-card" [class]="indiceSobrevivencia > 100 ? 'critical' : ''">
+        <div class="survival-header">
+            <span class="label">Saúde do Mês (Projeção)</span>
+            <span class="status-tag">{{ statusSobrevivencia }}</span>
+        </div>
+        
+        <div class="survival-meter">
+            <div class="meter-bar" [style.width.%]="indiceSobrevivencia > 100 ? 100 : indiceSobrevivencia" 
+                [style.background]="getCorIndice()"></div>
+        </div>
+
+        <div class="survival-info">
+            @if (valorFaltanteOuSobra >= 0) {
+            <p>Deve sobrar <strong>{{ valorFaltanteOuSobra | currency:'BRL' }}</strong> no dia 31</p>
+            } @else {
+            <p>Atenção: Faltarão <strong>{{ (valorFaltanteOuSobra * -1) | currency:'BRL' }}</strong> para fechar o mês</p>
+            }
+        </div>
+    </div>
+
     <div class="budget-radar">
       <h3>🚨 Radar de Orçamentos</h3>
       <div class="radar-grid">
