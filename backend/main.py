@@ -117,7 +117,7 @@ def criar_transacao(transacao: TransacaoCreate, db: Session = Depends(get_db)):
     return nova_transacao
 
 
-@app.get("/", methods=["GET", "HEAD"])
+@app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     return {"status": "online"}
 
