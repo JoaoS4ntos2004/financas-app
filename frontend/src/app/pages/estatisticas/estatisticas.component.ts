@@ -20,6 +20,10 @@ export class EstatisticasComponent implements OnInit {
   
   // Filtros
   periodoSelecionado: number = 6; // Meses (3, 6, 12)
+
+  comparativoMetas: any[] = [];
+  limiteDiarioSugerido: number = 0;
+    diasRestantes: number = 0;
   
   // Métricas Calculadas
   mediaGastosMensal: number = 0;
@@ -41,7 +45,46 @@ export class EstatisticasComponent implements OnInit {
 
   gerarRelatorios() {
     this.calcularMetricasPrincipais();
+    this.calcularRadarOrcamento(); // Nova função
     setTimeout(() => this.renderizarGraficoTendencia(), 100);
+  }
+
+  private calcularRadarOrcamento() {
+    const hoje = new Date();
+    this.diasRestantes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate() - hoje.getDate() + 1;
+
+    // 1. Cálculo do Limite Diário (Exemplo: Saldo Atual / Dias Restantes)
+    // Aqui você pode adaptar para (Receita - Gastos Fixos) / Dias Restantes
+    const saldoParaGastar = this.transacoes
+      .reduce((acc, t) => t.tipo === 'receita' ? acc + t.valor : acc - t.valor, 0);
+    
+    this.limiteDiarioSugerido = saldoParaGastar > 0 ? saldoParaGastar / this.diasRestantes : 0;
+
+    // 2. Cruzamento com Metas
+    this.transacaoService.getOrcamentos().subscribe(metas => {
+      this.comparativoMetas = metas.map(meta => {
+        const gastoReal = this.transacoes
+          .filter(t => t.categoria === meta.categoria && t.tipo === 'despesa' && this.isMesAtual(t.data_transacao))
+          .reduce((acc, t) => acc + t.valor, 0);
+
+        const percentual = (gastoReal / meta.limite_mensal) * 100;
+        
+        return {
+          categoria: meta.categoria,
+          limite: meta.limite_mensal,
+          real: gastoReal,
+          porcentagem: percentual > 100 ? 100 : percentual,
+          // Define a cor baseada na gravidade
+          status: percentual > 90 ? 'danger' : percentual > 70 ? 'warning' : 'success'
+        };
+      });
+    });
+  }
+
+  private isMesAtual(dataStr: any): boolean {
+    const d = new Date(dataStr);
+    const hoje = new Date();
+    return d.getMonth() === hoje.getMonth() && d.getFullYear() === hoje.getFullYear();
   }
 
   private calcularMetricasPrincipais() {

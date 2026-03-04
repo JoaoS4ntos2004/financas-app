@@ -1,37 +1,43 @@
 <div class="stats-wrapper">
-  <header class="stats-header">
-    <div>
-      <h1>Inteligência Financeira</h1>
-      <p>Análise de saúde baseada no seu histórico</p>
+  
+  <section class="priority-section">
+    <div class="daily-allowance-card">
+      <span class="label">Disponível por dia (hoje)</span>
+      <h2 class="allowance-value">{{ limiteDiarioSugerido | currency:'BRL' }}</h2>
+      <p class="hint">Para os próximos {{ diasRestantes }} dias</p>
     </div>
-    <div class="filter-box">
-      <select [(ngModel)]="periodoSelecionado" (change)="gerarRelatorios()" class="period-select">
-        <option [value]="3">Últimos 3 Meses</option>
-        <option [value]="6">Últimos 6 Meses</option>
-        <option [value]="12">Último Ano</option>
-      </select>
+
+    <div class="budget-radar">
+      <h3>🚨 Radar de Orçamentos</h3>
+      <div class="radar-grid">
+        @for (item of comparativoMetas; track item.categoria) {
+          <div class="radar-item" [class]="item.status">
+            <div class="radar-info">
+              <span class="cat">{{ item.categoria }}</span>
+              <span class="pct">{{ item.porcentagem | number:'1.0-0' }}%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="item.porcentagem"></div>
+            </div>
+          </div>
+        }
+      </div>
     </div>
-  </header>
+  </section>
 
   <div class="metrics-grid">
     <div class="card-metric">
-      <span class="label">Média Mensal ({{periodoSelecionado}}m)</span>
+      <span class="label">Média Mensal (Histórica)</span>
       <h2 class="value">{{ mediaGastosMensal | currency:'BRL' }}</h2>
     </div>
-    
-    <div class="card-metric highlight" [class.danger]="projecaoMesAtual > mediaGastosMensal">
-      <span class="label">Projeção para Março</span>
+    <div class="card-metric highlight">
+      <span class="label">Projeção Final de Março</span>
       <h2 class="value">{{ projecaoMesAtual | currency:'BRL' }}</h2>
-      <span class="status-msg">
-        {{ projecaoMesAtual > mediaGastosMensal ? '⚠️ Acima da média' : '✅ Dentro do esperado' }}
-      </span>
     </div>
   </div>
 
   <div class="chart-container">
-    <div class="chart-header">
-      <h3>Tendência de Gastos</h3>
-    </div>
+    <h3>Tendência de Fluxo</h3>
     <div class="canvas-wrapper">
       <canvas id="canvasTendencia"></canvas>
     </div>
