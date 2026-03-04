@@ -1,1 +1,39 @@
-<p>estatisticas works!</p>
+<div class="stats-wrapper">
+  <header class="stats-header">
+    <div>
+      <h1>Inteligência Financeira</h1>
+      <p>Análise de saúde baseada no seu histórico</p>
+    </div>
+    <div class="filter-box">
+      <select [(ngModel)]="periodoSelecionado" (change)="gerarRelatorios()" class="period-select">
+        <option [value]="3">Últimos 3 Meses</option>
+        <option [value]="6">Últimos 6 Meses</option>
+        <option [value]="12">Último Ano</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="metrics-grid">
+    <div class="card-metric">
+      <span class="label">Média Mensal ({{periodoSelecionado}}m)</span>
+      <h2 class="value">{{ mediaGastosMensal | currency:'BRL' }}</h2>
+    </div>
+    
+    <div class="card-metric highlight" [class.danger]="projecaoMesAtual > mediaGastosMensal">
+      <span class="label">Projeção para Março</span>
+      <h2 class="value">{{ projecaoMesAtual | currency:'BRL' }}</h2>
+      <span class="status-msg">
+        {{ projecaoMesAtual > mediaGastosMensal ? '⚠️ Acima da média' : '✅ Dentro do esperado' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <div class="chart-header">
+      <h3>Tendência de Gastos</h3>
+    </div>
+    <div class="canvas-wrapper">
+      <canvas id="canvasTendencia"></canvas>
+    </div>
+  </div>
+</div>
