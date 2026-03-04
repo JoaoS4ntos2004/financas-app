@@ -15,6 +15,7 @@ Chart.register(...registerables);
 export class DashboardComponent implements OnInit {
   transacoes: Transacao[] = [];
   private transacaoService = inject(TransacaoService);
+  carregando: boolean = true;
 
   // Variáveis do Dashboard
   totalReceitas: number = 0;
@@ -75,13 +76,16 @@ export class DashboardComponent implements OnInit {
   }
 
   carregarTransacoes() {
+    this.carregando = true;
     this.transacaoService.getTransacoes().subscribe({
       next: (dados) => {
         this.transacoes = dados;
         this.filtrarPorMes();
+        this.carregando = false;
       },
       error: (erro) => {
         console.error('Erro ao buscar transações:', erro);
+        this.carregando = false;
       }
     });
   }

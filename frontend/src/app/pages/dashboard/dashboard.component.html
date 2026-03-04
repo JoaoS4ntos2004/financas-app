@@ -1,5 +1,17 @@
 <main class="dashboard-wrapper">
   
+  @if (carregando) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Sincronizando seus dados...</p>
+    </div>
+  }
+
+<div class="dashboard-wrapper"> 
+  ...
+</div>
+
+
   <header class="dash-header">
     <h1>Dashboard 💰</h1>
     <div class="filter-container">
