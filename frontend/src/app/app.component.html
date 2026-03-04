@@ -1,61 +1,43 @@
 <div class="app-shell">
-  <aside class="desktop-sidebar">
-    <div class="brand-area">
-      <div class="logo-blob">$</div>
-      <div class="brand-text">
-        <span class="main">Finance</span>
-        <span class="sub">Control Pro</span>
+  <aside class="sidebar-desktop">
+    <div class="brand">
+      <div class="brand-icon">JP</div>
+      <div class="brand-info">
+        <span class="brand-name">Finance<strong>PRO</strong></span>
+        <span class="brand-status">Online</span>
       </div>
     </div>
 
-    <nav class="nav-menu">
-      <a routerLink="/dashboard" routerLinkActive="active-link" class="nav-item">
-        <span class="icon">📊</span>
-        <span class="nav-label">Visão Geral</span>
+    <nav class="nav-group">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+        <span class="icon">🏠</span> 
+        <span class="label">Dashboard</span>
       </a>
-      <a routerLink="/orcamentos" routerLinkActive="active-link" class="nav-item">
-        <span class="icon">🎯</span>
-        <span class="nav-label">Planejamento</span>
+      <a routerLink="/orcamentos" routerLinkActive="active" class="nav-link">
+        <span class="icon">🎯</span> 
+        <span class="label">Metas</span>
       </a>
-      <a routerLink="/estatisticas" routerLinkActive="active-link" class="nav-item">
-        <span class="icon">📈</span>
-        <span class="nav-label">Inteligência</span>
+      <a routerLink="/estatisticas" routerLinkActive="active" class="nav-link">
+        <span class="icon">📊</span> 
+        <span class="label">Estatísticas</span>
       </a>
-      <a routerLink="/configuracoes" routerLinkActive="active-link" class="nav-item">
-        <span class="icon">⚙️</span>
-        <span class="nav-label">Ajustes</span>
+      <a routerLink="/configuracoes" routerLinkActive="active" class="nav-link">
+        <span class="icon">⚙️</span> 
+        <span class="label">Ajustes</span>
       </a>
     </nav>
-
-    <div class="user-profile">
-      <div class="user-avatar">JP</div>
-      <div class="user-name">
-        <strong>João Pedro</strong>
-        <span>Premium</span>
-      </div>
-    </div>
   </aside>
 
-  <main class="main-stage">
+  <main class="main-content">
     <router-outlet></router-outlet>
   </main>
 
-  <nav class="mobile-tabbar">
-    <a routerLink="/dashboard" routerLinkActive="active-tab">
-      <span class="tab-icon">📊</span>
-      <span class="tab-label">Home</span>
-    </a>
-    <a routerLink="/orcamentos" routerLinkActive="active-tab">
-      <span class="tab-icon">🎯</span>
-      <span class="tab-label">Metas</span>
-    </a>
-    <a routerLink="/estatisticas" routerLinkActive="active-tab">
-      <span class="tab-icon">📈</span>
-      <span class="tab-label">Dados</span>
-    </a>
-    <a routerLink="/configuracoes" routerLinkActive="active-tab">
-      <span class="tab-icon">⚙️</span>
-      <span class="tab-label">Perfil</span>
-    </a>
+  <nav class="mobile-nav">
+    <div class="mobile-nav-inner">
+      <a routerLink="/dashboard" routerLinkActive="active-m">🏠</a>
+      <a routerLink="/orcamentos" routerLinkActive="active-m">🎯</a>
+      <a routerLink="/estatisticas" routerLinkActive="active-m">📊</a>
+      <a routerLink="/configuracoes" routerLinkActive="active-m">⚙️</a>
+    </div>
   </nav>
 </div>
