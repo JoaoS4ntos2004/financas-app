@@ -31,8 +31,10 @@
 .txt-r { color: #ef4444 !important; }
 
 /* GRÁFICOS GRID */
-.charts-grid { display: grid; grid-template-columns: 1fr; gap: 20px; } /* Empilhados para ficarem largos e legíveis */
-
+.charts-grid-single { 
+  display: block; /* Ocupa 100% da largura na tela do PC e Mobile */
+  margin-top: 20px;
+}
 .card-white {
   background: white; padding: 25px; border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
