@@ -141,18 +141,41 @@
     display: flex; 
     align-items: center; 
     gap: 10px; 
-    margin: 0; /* Remove qualquer margem que possa empurrar o logo pra cima/baixo */
+    margin: 0; 
   }
   
   .brand-icon-m {
-    width: 32px; height: 32px;
-    background: var(--primary);
-    color: white; border-radius: 8px;
+    width: 36px; height: 36px; /* Ligeiramente menor que no PC para caber no header */
+    background: linear-gradient(135deg, #10b981, #059669); /* O mesmo degradê chique */
+    color: white; 
+    border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-weight: bold; font-size: 0.8rem;
+    font-weight: 900; font-size: 0.9rem;
+    box-shadow: 0 3px 8px rgba(16, 185, 129, 0.25); /* Sombra verde sutil */
+  }
+
+  .brand-info-m {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .brand-name { font-size: 1.1rem; color: #1e293b; }
+
+  .brand-name-m { 
+    display: block; 
+    font-size: 1.05rem; 
+    color: #1e293b; 
+    line-height: 1.1; /* Deixa o "Online" mais coladinho no nome */
+  }
+
+  .brand-status-m { 
+    font-size: 0.65rem; 
+    color: #10b981; 
+    display: block; 
+    font-weight: 700; 
+    margin-top: 2px;
+  }
 
   .btn-privacy-top {
     display: flex;
