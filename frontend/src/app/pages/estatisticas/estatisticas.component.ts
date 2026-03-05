@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
 import { PrivacyService } from '../../services/privacy.service';
-import { PrivacyCurrencyPipe } from '../../pipes/privacy-currency.pipe'; // Ajuste o caminho
+import { PrivacyCurrencyPipe } from '../../services/privacy-currency.pipe'; // Ajuste o caminho
 // Importe o seu TransacaoService e os dados aqui
 
 Chart.register(...registerables);
