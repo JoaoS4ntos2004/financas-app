@@ -1,4 +1,14 @@
 <div class="app-shell">
+  <header class="mobile-top-header">
+    <div class="brand-m">
+      <div class="brand-icon-m">JP</div>
+      <span class="brand-name">Finance<strong>PRO</strong></span>
+    </div>
+    <button (click)="togglePrivacidade()" class="btn-privacy-top">
+      {{ privacyService.isFurtivo() ? '👁️' : '🙈' }}
+    </button>
+  </header>
+
   <aside class="sidebar-desktop">
     <div class="brand">
       <div class="brand-icon">JP</div>
@@ -44,12 +54,6 @@
       <a routerLink="/orcamentos" routerLinkActive="active-m">🎯</a>
       <a routerLink="/estatisticas" routerLinkActive="active-m">📊</a>
       <a routerLink="/configuracoes" routerLinkActive="active-m">⚙️</a>
-      <button (click)="togglePrivacidade()" class="btn-privacy">
-        <span style="font-size: 0.9rem; margin-right: 10px; font-weight: 600; color: #64748b;">
-          {{ privacyService.isFurtivo() ? 'Mostrar valores' : 'Ocultar valores' }}
-        </span>
-        {{ privacyService.isFurtivo() ? '👁️' : '🙈' }}
-      </button>
     </div>
   </nav>
 </div>
