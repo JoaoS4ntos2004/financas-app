@@ -1,81 +1,88 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { PrivacyService } from '../../services/privacy.service';
-import { PrivacyCurrencyPipe } from '../../services/privacy-currency.pipe'; // Ajuste o caminho
-// Importe o seu TransacaoService e os dados aqui
+import { PrivacyCurrencyPipe } from '../../services/privacy-currency.pipe';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-estatisticas',
   standalone: true,
-  imports: [CommonModule, PrivacyCurrencyPipe],
+  imports: [CommonModule, FormsModule, PrivacyCurrencyPipe],
   templateUrl: './estatisticas.component.html',
   styleUrls: ['./estatisticas.component.css']
 })
 export class EstatisticasComponent implements OnInit {
   public privacyService = inject(PrivacyService);
   
-  mediaGastos: number = 2450.00; // Mock: Você vai calcular isso no Service
-  categoriaVila: string = 'Alimentação';
-  balancoPeriodo: number = 1200.50;
+  mesAnoSelecionado: string = '2023-10'; // Exemplo
+  
+  // Variáveis para as novas métricas analíticas
+  resultadoLiquido: number = 850.00;
+  taxaEconomia: number = 18.5; // Guardou 18.5% do que ganhou
+  variacaoDespesas: number = -4.2; // Gastou 4.2% a menos que o mês passado
 
   ngOnInit() {
-    this.renderizarGraficoFluxo();
-    this.renderizarGraficoEvolucao();
+    this.renderizarGraficoComposicao();
+    this.renderizarGraficoRitmo();
   }
 
-  renderizarGraficoFluxo() {
-    new Chart('fluxoCaixaChart', {
-      type: 'bar',
-      data: {
-        labels: ['Out', 'Nov', 'Dez', 'Jan', 'Fev', 'Mar'],
-        datasets: [
-          {
-            label: 'Receitas',
-            data: [4000, 4200, 5000, 4100, 4100, 4500],
-            backgroundColor: '#10b981', // Verde
-            borderRadius: 4
-          },
-          {
-            label: 'Despesas',
-            data: [3200, 3800, 4500, 2900, 3100, 2800],
-            backgroundColor: '#ef4444', // Vermelho
-            borderRadius: 4
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom' } }
-      }
-    });
+  atualizarDados() {
+    // Aqui você vai chamar seu service para buscar os dados reais do mês selecionado
+    // e depois atualizar os gráficos.
   }
 
-  renderizarGraficoEvolucao() {
-    new Chart('evolucaoPatrimonioChart', {
-      type: 'line',
+  renderizarGraficoComposicao() {
+    new Chart('composicaoChart', {
+      type: 'doughnut',
       data: {
-        labels: ['Out', 'Nov', 'Dez', 'Jan', 'Fev', 'Mar'],
+        labels: ['Alimentação', 'Transporte', 'Lazer', 'Contas Fixo'],
         datasets: [{
-          label: 'Patrimônio Total',
-          data: [10000, 10400, 10900, 12100, 13100, 14800],
-          borderColor: '#3b82f6', // Azul elegante
-          backgroundColor: 'rgba(59, 130, 246, 0.1)',
-          fill: true,
-          tension: 0.4, // Curva suave
-          borderWidth: 3,
-          pointBackgroundColor: '#ffffff',
-          pointBorderColor: '#3b82f6',
-          pointBorderWidth: 2
+          data: [800, 300, 450, 1200],
+          backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#64748b'],
+          borderWidth: 0,
+          hoverOffset: 4
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } }
+        cutout: '75%', // Deixa a rosca bem fina e elegante
+        plugins: {
+          legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8 } }
+        }
+      }
+    });
+  }
+
+  renderizarGraficoRitmo() {
+    new Chart('ritmoGastosChart', {
+      type: 'line',
+      data: {
+        labels: ['Dia 5', 'Dia 10', 'Dia 15', 'Dia 20', 'Dia 25', 'Dia 30'],
+        datasets: [{
+          label: 'Gasto Acumulado',
+          data: [400, 950, 1400, 2100, 2450, 2750],
+          borderColor: '#ef4444', // Vermelho indicando saída
+          backgroundColor: 'rgba(239, 68, 68, 0.1)', // Vermelho transparente embaix da linha
+          fill: true,
+          tension: 0.3, // Curva suave
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#ef4444',
+          pointBorderWidth: 2,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } }, // Esconde a legenda para ficar mais limpo
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+          x: { grid: { display: false } }
+        }
       }
     });
   }

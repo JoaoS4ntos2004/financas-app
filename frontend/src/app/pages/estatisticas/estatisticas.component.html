@@ -2,48 +2,59 @@
   <header class="dash-header">
     <div>
       <h1>Análise de Dados</h1>
-      <p class="subtitle">Acompanhe a evolução do seu patrimônio</p>
+      <p class="subtitle">Métricas de saúde financeira e distribuição de gastos</p>
     </div>
     <div class="filter-container">
-      <select class="modern-select">
-        <option value="6">Últimos 6 meses</option>
-        <option value="12">Últimos 12 meses</option>
-        <option value="all">Todo o período</option>
-      </select>
+      <input type="month" class="modern-input" [(ngModel)]="mesAnoSelecionado" (change)="atualizarDados()">
     </div>
   </header>
 
   <section class="kpi-grid">
-    <div class="kpi-card info-card">
-      <span class="kpi-label">Média de Gastos / Mês</span>
-      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()">
-        {{ mediaGastos | privacyCurrency }}
-      </h3>
-    </div>
-
-    <div class="kpi-card info-card">
-      <span class="kpi-label">Maior Categoria de Gasto</span>
-      <h3 class="kpi-value text-capitalize">
-        {{ categoriaVila || 'N/A' }}
-      </h3>
-    </div>
-
     <div class="kpi-card info-card dark">
-      <span class="kpi-label">Balanço do Período</span>
-      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()" [class.txt-g]="balancoPeriodo >= 0" [class.txt-r]="balancoPeriodo < 0">
-        {{ balancoPeriodo | privacyCurrency }}
+      <span class="kpi-label">Resultado Líquido</span>
+      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()">
+        {{ resultadoLiquido | privacyCurrency }}
       </h3>
+      <span class="kpi-trend" [class.txt-g]="resultadoLiquido > 0">
+        {{ resultadoLiquido > 0 ? 'Superávit no mês' : 'Déficit no mês' }}
+      </span>
+    </div>
+
+    <div class="kpi-card info-card">
+      <span class="kpi-label">Taxa de Economia</span>
+      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()">
+        {{ taxaEconomia }}%
+      </h3>
+      <span class="kpi-trend neutral">Da receita preservada</span>
+    </div>
+
+    <div class="kpi-card info-card">
+      <span class="kpi-label">Variação de Despesas</span>
+      <h3 class="kpi-value" [class.txt-g]="variacaoDespesas <= 0" [class.txt-r]="variacaoDespesas > 0">
+        {{ variacaoDespesas > 0 ? '+' : '' }}{{ variacaoDespesas }}%
+      </h3>
+      <span class="kpi-trend neutral">vs. Mês anterior</span>
     </div>
   </section>
 
-  <div class="charts-grid-single">
+  <div class="charts-grid-duo">
     <div class="card-white chart-container">
       <div class="card-header">
-        <h3 class="card-title">Fluxo de Caixa</h3>
-        <span class="badge">Receitas vs Despesas</span>
+        <h3 class="card-title">Composição de Gastos</h3>
+        <span class="badge">Por Categoria</span>
+      </div>
+      <div class="canvas-wrapper doughnut-wrapper">
+        <canvas id="composicaoChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card-white chart-container">
+      <div class="card-header">
+        <h3 class="card-title">Ritmo de Gastos</h3>
+        <span class="badge">Acumulado diário</span>
       </div>
       <div class="canvas-wrapper">
-        <canvas id="fluxoCaixaChart"></canvas>
+        <canvas id="ritmoGastosChart"></canvas>
       </div>
     </div>
   </div>
