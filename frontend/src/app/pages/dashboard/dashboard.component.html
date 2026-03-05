@@ -7,13 +7,8 @@
     </div>
   }
 
-<div class="dashboard-wrapper"> 
-
-</div>
-
-
   <header class="dash-header">
-    <h1>Dashboard 💰</h1>
+    <h1>Dashboard</h1>
     <div class="filter-container">
       <input type="month" class="modern-input" [(ngModel)]="mesAnoSelecionado" (ngModelChange)="filtrarPorMes()">
     </div>
@@ -44,7 +39,7 @@
 
   <div class="main-layout">
     <div class="card-white chart-box">
-      <h3>🍕 Despesas por Categoria</h3>
+      <h3 class="card-title">Despesas por Categoria</h3>
       <div class="canvas-wrapper">
         <canvas id="canvasCategorias"></canvas>
       </div>
@@ -52,9 +47,9 @@
 
     <div class="side-actions">
       <div class="card-white">
-        <h3>✨ Novo Lançamento</h3>
+        <h3 class="card-title">Novo Lançamento</h3>
         <div class="form-stack">
-          <input type="text" class="modern-input" placeholder="O que você comprou?" [(ngModel)]="novaTransacao.descricao">
+          <input type="text" class="modern-input" placeholder="Descrição do lançamento" [(ngModel)]="novaTransacao.descricao">
           
           <div class="form-row">
             <div style="flex: 1.5;">
@@ -63,8 +58,8 @@
             
             <div style="flex: 1;">
               <select class="modern-select" [(ngModel)]="novaTransacao.tipo">
-                <option value="despesa">💸 Gasto</option>
-                <option value="receita">💰 Ganho</option>
+                <option value="despesa">Saída</option>
+                <option value="receita">Entrada</option>
               </select>
             </div>
           </div>
@@ -72,7 +67,7 @@
           @if (novaTransacao.tipo === 'despesa') {
             <div class="form-row">
               <select class="modern-select" [(ngModel)]="novaTransacao.categoria">
-                <option value="" disabled selected>🏷️ Selecione a Categoria</option>
+                <option value="" disabled selected>Selecione a Categoria</option>
                 @for (cat of categoriasDisponiveis; track cat) {
                   <option [value]="cat">{{ cat }}</option>
                 }
@@ -86,10 +81,10 @@
       </div>
 
       <div class="card-white import-box">
-        <h3>📥 Importar CSV</h3>
+        <h3 class="card-title">Importar CSV</h3>
         <div class="file-area">
           <label for="file-upload" class="custom-file-upload">
-            {{ arquivoSelecionado ? '📄 ' + arquivoSelecionado.name : '📁 Escolher Arquivo' }}
+            {{ arquivoSelecionado ? arquivoSelecionado.name : 'Escolher arquivo...' }}
           </label>
           <input id="file-upload" type="file" (change)="onFileSelected($event)" accept=".csv">
           
@@ -103,9 +98,9 @@
 
   <section class="list-container">
     <div class="list-header">
-      <h3>📋 Lançamentos</h3>
+      <h3 class="card-title">Histórico de Lançamentos</h3>
       <select class="modern-select small" [(ngModel)]="categoriaSelecionada" (ngModelChange)="mudarCategoria()">
-        <option value="Todas">Todas Categorias</option>
+        <option value="Todas">Todas as categorias</option>
         @for (cat of categoriasDisponiveis; track cat) { <option [value]="cat">{{ cat }}</option> }
       </select>
     </div>
@@ -118,10 +113,16 @@
             <small>{{ t.data_transacao | date:'dd/MM' }} • {{ t.categoria }}</small>
           </div>
           <div class="t-price-box">
-            <span class="t-price" [class.txt-g]="t.tipo === 'receita'">
-              {{ t.valor | currency:'BRL' }}
+            <span class="t-price" [class.txt-g]="t.tipo === 'receita'" [class.blurred]="privacyService.isFurtivo()">
+              {{ t.valor | privacyCurrency }}
             </span>
-            <button (click)="excluirTransacao(t.id)" class="btn-icon">🗑️</button>
+            <button (click)="excluirTransacao(t.id)" class="btn-icon" title="Excluir">
+              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+              </svg>
+            </button>
           </div>
         </div>
       }
