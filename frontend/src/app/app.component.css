@@ -16,17 +16,23 @@
 .btn-privacy {
   background: #f1f5f9; 
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 30px; /* Transformado em formato arredondado (pílula) */
   width: 100%; 
   height: 45px;
   cursor: pointer;
-  font-size: 1.2rem;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+  color: #64748b;
 }
+
+.privacy-text {
+  font-size: 0.9rem; 
+  margin-right: 10px; 
+  font-weight: 600; 
+} 
 
 .btn-privacy:hover {
   background: #e2e8f0;
@@ -122,16 +128,21 @@
     display: flex;
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: 60px;
+    height: 65px; /* Altura fixa ajuda no alinhamento vertical */
     background: #ffffff;
     border-bottom: 1px solid #e2e8f0;
     padding: 0 20px;
-    align-items: center;
+    align-items: center; /* Garante que logotipo e botão fiquem na mesma linha */
     justify-content: space-between;
     z-index: 1001;
   }
 
-  .brand-m { display: flex; align-items: center; gap: 8px; }
+  .brand-m { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin: 0; /* Remove qualquer margem que possa empurrar o logo pra cima/baixo */
+  }
   
   .brand-icon-m {
     width: 32px; height: 32px;
@@ -144,11 +155,24 @@
   .brand-name { font-size: 1.1rem; color: #1e293b; }
 
   .btn-privacy-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: #f1f5f9;
+    color: #1e293b;
     border: none;
-    padding: 8px;
-    border-radius: 10px;
-    font-size: 1.2rem;
+    width: 42px; /* Tamanho exato */
+    height: 42px; /* Tamanho exato */
+    border-radius: 50%; /* Faz o botão ser um círculo perfeito */
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    transition: 0.2s;
+  }
+
+  .btn-privacy-top:active {
+    background: #e2e8f0;
+    transform: scale(0.95);
   }
 
   /* PÍLULA MOBILE */
