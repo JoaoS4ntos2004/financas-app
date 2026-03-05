@@ -1,65 +1,60 @@
-<div class="stats-wrapper">
-  
-  <section class="priority-section">
-    <div class="daily-allowance-card">
-      <span class="label">Disponível por dia (hoje)</span>
-      <h2 class="allowance-value">{{ limiteDiarioSugerido | currency:'BRL' }}</h2>
-      <p class="hint">Para os próximos {{ diasRestantes }} dias</p>
+<main class="dashboard-wrapper">
+  <header class="dash-header">
+    <div>
+      <h1>Análise de Dados</h1>
+      <p class="subtitle">Acompanhe a evolução do seu patrimônio</p>
+    </div>
+    <div class="filter-container">
+      <select class="modern-select">
+        <option value="6">Últimos 6 meses</option>
+        <option value="12">Últimos 12 meses</option>
+        <option value="all">Todo o período</option>
+      </select>
+    </div>
+  </header>
+
+  <section class="kpi-grid">
+    <div class="kpi-card info-card">
+      <span class="kpi-label">Média de Gastos / Mês</span>
+      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()">
+        {{ mediaGastos | privacyCurrency }}
+      </h3>
     </div>
 
-    <div class="survival-card" [class]="indiceSobrevivencia > 100 ? 'critical' : ''">
-        <div class="survival-header">
-            <span class="label">Saúde do Mês (Projeção)</span>
-            <span class="status-tag">{{ statusSobrevivencia }}</span>
-        </div>
-        
-        <div class="survival-meter">
-            <div class="meter-bar" [style.width.%]="indiceSobrevivencia > 100 ? 100 : indiceSobrevivencia" 
-                [style.background]="getCorIndice()"></div>
-        </div>
-
-        <div class="survival-info">
-            @if (valorFaltanteOuSobra >= 0) {
-            <p>Deve sobrar <strong>{{ valorFaltanteOuSobra | currency:'BRL' }}</strong> no dia 31</p>
-            } @else {
-            <p>Atenção: Faltarão <strong>{{ (valorFaltanteOuSobra * -1) | currency:'BRL' }}</strong> para fechar o mês</p>
-            }
-        </div>
+    <div class="kpi-card info-card">
+      <span class="kpi-label">Maior Categoria de Gasto</span>
+      <h3 class="kpi-value text-capitalize">
+        {{ categoriaVila || 'N/A' }}
+      </h3>
     </div>
 
-    <div class="budget-radar">
-      <h3>🚨 Radar de Orçamentos</h3>
-      <div class="radar-grid">
-        @for (item of comparativoMetas; track item.categoria) {
-          <div class="radar-item" [class]="item.status">
-            <div class="radar-info">
-              <span class="cat">{{ item.categoria }}</span>
-              <span class="pct">{{ item.porcentagem | number:'1.0-0' }}%</span>
-            </div>
-            <div class="progress-track">
-              <div class="progress-fill" [style.width.%]="item.porcentagem"></div>
-            </div>
-          </div>
-        }
-      </div>
+    <div class="kpi-card info-card dark">
+      <span class="kpi-label">Balanço do Período</span>
+      <h3 class="kpi-value" [class.blurred]="privacyService.isFurtivo()" [class.txt-g]="balancoPeriodo >= 0" [class.txt-r]="balancoPeriodo < 0">
+        {{ balancoPeriodo | privacyCurrency }}
+      </h3>
     </div>
   </section>
 
-  <div class="metrics-grid">
-    <div class="card-metric">
-      <span class="label">Média Mensal (Histórica)</span>
-      <h2 class="value">{{ mediaGastosMensal | currency:'BRL' }}</h2>
+  <div class="charts-grid">
+    <div class="card-white chart-container">
+      <div class="card-header">
+        <h3 class="card-title">Fluxo de Caixa</h3>
+        <span class="badge">Receitas vs Despesas</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="fluxoCaixaChart"></canvas>
+      </div>
     </div>
-    <div class="card-metric highlight">
-      <span class="label">Projeção Final de Março</span>
-      <h2 class="value">{{ projecaoMesAtual | currency:'BRL' }}</h2>
-    </div>
-  </div>
 
-  <div class="chart-container">
-    <h3>Tendência de Fluxo</h3>
-    <div class="canvas-wrapper">
-      <canvas id="canvasTendencia"></canvas>
+    <div class="card-white chart-container">
+      <div class="card-header">
+        <h3 class="card-title">Evolução Patrimonial</h3>
+        <span class="badge">Saldo Acumulado</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="evolucaoPatrimonioChart"></canvas>
+      </div>
     </div>
   </div>
-</div>
+</main>
