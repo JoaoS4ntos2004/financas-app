@@ -4,18 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { Chart, registerables } from 'chart.js';
 import { PrivacyService } from '../../services/privacy.service';
 import { PrivacyCurrencyPipe } from '../../services/privacy-currency.pipe';
-import { TransacaoService } from '../../services/transacao.service';
+// Importamos o Service e a Interface Transacao direto dele
+import { TransacaoService, Transacao } from '../../services/transacao.service';
 
 Chart.register(...registerables);
-
-interface Transacao {
-  id: string;
-  descricao: string;
-  valor: number;
-  tipo: 'receita' | 'despesa';
-  categoria: string;
-  data_transacao: string; // Formato YYYY-MM-DD
-}
 
 @Component({
   selector: 'app-estatisticas',
@@ -26,7 +18,7 @@ interface Transacao {
 })
 export class EstatisticasComponent implements OnInit {
   public privacyService = inject(PrivacyService);
-  // public transacaoService = inject(TransacaoService);
+  public transacaoService = inject(TransacaoService); // <-- Descomentado e pronto pro uso!
   
   mesAnoSelecionado: string = ''; 
   
@@ -35,16 +27,16 @@ export class EstatisticasComponent implements OnInit {
   taxaEconomia: number = 0;
   variacaoDespesas: number = 0;
 
-  // Instâncias dos gráficos para podermos destruí-los antes de recriar
+  // Instâncias dos gráficos
   chartComposicao: any;
   chartRitmo: any;
 
-  // Array simulando o banco de dados (Substitua pela chamada do seu Service)
+  // Arrays que vão guardar os dados reais
   transacoesDoMes: Transacao[] = [];
   transacoesMesAnterior: Transacao[] = [];
 
   ngOnInit() {
-    // Define o mês atual como padrão (Ex: '2026-03')
+    // Define o mês atual como padrão ao abrir a tela
     const hoje = new Date();
     const mes = (hoje.getMonth() + 1).toString().padStart(2, '0');
     this.mesAnoSelecionado = `${hoje.getFullYear()}-${mes}`;
@@ -53,16 +45,42 @@ export class EstatisticasComponent implements OnInit {
   }
 
   atualizarDados() {
-    // 1. Aqui você buscaria os dados reais do seu serviço baseados no mesAnoSelecionado
-    // Exemplo: this.transacoesDoMes = this.transacaoService.getByMes(this.mesAnoSelecionado);
-    
-    // Simulação temporária para não quebrar o código:
-    this.transacoesDoMes = []; 
-    this.transacoesMesAnterior = [];
+    // Busca TODAS as transações no seu Backend/Cache
+    this.transacaoService.getTransacoes().subscribe({
+      next: (todasTransacoes) => {
+        
+        // 1. Filtra as transações do Mês Selecionado (ex: "2026-03")
+        this.transacoesDoMes = todasTransacoes.filter(t => 
+          t.data_transacao && t.data_transacao.startsWith(this.mesAnoSelecionado)
+        );
 
-    this.calcularMétricas();
-    this.atualizarGraficoComposicao();
-    this.atualizarGraficoRitmo();
+        // 2. Descobre qual é o mês anterior matematicamente (ex: "2026-02")
+        const [anoStr, mesStr] = this.mesAnoSelecionado.split('-');
+        let ano = parseInt(anoStr);
+        let mes = parseInt(mesStr) - 1;
+        
+        // Se voltarmos do mês 1 (Janeiro), o mês vira 12 e o ano cai
+        if (mes === 0) {
+          mes = 12;
+          ano -= 1;
+        }
+        
+        const mesAnteriorStr = `${ano}-${mes.toString().padStart(2, '0')}`;
+
+        // 3. Filtra as transações do Mês Anterior
+        this.transacoesMesAnterior = todasTransacoes.filter(t => 
+          t.data_transacao && t.data_transacao.startsWith(mesAnteriorStr)
+        );
+
+        // 4. Agora que temos os dados corretos, mandamos calcular e desenhar!
+        this.calcularMétricas();
+        this.atualizarGraficoComposicao();
+        this.atualizarGraficoRitmo();
+      },
+      error: (err) => {
+        console.error('Erro ao buscar transações nas estatísticas:', err);
+      }
+    });
   }
 
   calcularMétricas() {
@@ -83,12 +101,12 @@ export class EstatisticasComponent implements OnInit {
     // 1. Resultado Líquido
     this.resultadoLiquido = receitasAtual - despesasAtual;
 
-    // 2. Taxa de Economia (%) = (Receita - Despesa) / Receita
+    // 2. Taxa de Economia (%)
     if (receitasAtual > 0) {
       const taxa = ((receitasAtual - despesasAtual) / receitasAtual) * 100;
       this.taxaEconomia = parseFloat(taxa.toFixed(1));
     } else {
-      this.taxaEconomia = 0; // Evita divisão por zero
+      this.taxaEconomia = 0; 
     }
 
     // 3. Variação de Despesas (%)
@@ -101,17 +119,18 @@ export class EstatisticasComponent implements OnInit {
   }
 
   atualizarGraficoComposicao() {
-    // Agrupa despesas por categoria
     const despesas = this.transacoesDoMes.filter(t => t.tipo === 'despesa');
     
+    // Agrupa e soma valores da mesma categoria
     const gastosPorCategoria = despesas.reduce((acc: any, t) => {
-      acc[t.categoria] = (acc[t.categoria] || 0) + t.valor;
+      // Como a categoria pode vir vazia, garantimos um fallback para 'Outros'
+      const cat = t.categoria || 'Outros';
+      acc[cat] = (acc[cat] || 0) + t.valor;
       return acc;
     }, {});
 
     const labels = Object.keys(gastosPorCategoria);
     const data = Object.values(gastosPorCategoria);
-    // Paleta de cores premium
     const bgColors = ['#10b981', '#3b82f6', '#f59e0b', '#64748b', '#8b5cf6', '#ef4444'];
 
     if (this.chartComposicao) this.chartComposicao.destroy();
@@ -134,17 +153,17 @@ export class EstatisticasComponent implements OnInit {
   }
 
   atualizarGraficoRitmo() {
-    // Ordena as despesas por data crescente
     const despesasOrdenadas = this.transacoesDoMes
-      .filter(t => t.tipo === 'despesa')
-      .sort((a, b) => new Date(a.data_transacao).getTime() - new Date(b.data_transacao).getTime());
+      .filter(t => t.tipo === 'despesa' && t.data_transacao)
+      .sort((a, b) => new Date(a.data_transacao!).getTime() - new Date(b.data_transacao!).getTime());
 
     const labelsDiarios: string[] = [];
     const gastosAcumulados: number[] = [];
     let acumulado = 0;
 
     despesasOrdenadas.forEach(t => {
-      const dia = new Date(t.data_transacao).getDate();
+      // Extrai apenas o dia (ex: de '2026-03-15' extrai '15')
+      const dia = t.data_transacao!.split('-')[2];
       labelsDiarios.push(`Dia ${dia}`);
       acumulado += t.valor;
       gastosAcumulados.push(acumulado);
