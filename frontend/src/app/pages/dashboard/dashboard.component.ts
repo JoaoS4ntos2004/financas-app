@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
   private transacaoService = inject(TransacaoService);
   carregando: boolean = true;
   salvando: boolean = false;
+  editandoId: number | null = null;
 
   // Variáveis do Dashboard
   totalReceitas: number = 0;
@@ -200,6 +201,21 @@ export class DashboardComponent implements OnInit {
     return Math.ceil(this.totalItensFiltro / this.itensPorPagina) || 1;
   }
 
+  prepararEdicao(t: any) {
+    this.editandoId = t.id;
+    // Cria uma cópia exata da transação selecionada para o formulário
+    this.novaTransacao = { ...t }; 
+    
+    // Rola a tela suavemente para o topo (para o mobile é excelente)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  cancelarEdicao() {
+    this.editandoId = null;
+    this.novaTransacao = { descricao: '', valor: 0, tipo: 'despesa', categoria: '' };
+  }
+
+
   adicionarTransacao() {
     if (!this.novaTransacao.descricao || this.novaTransacao.valor <= 0) {
       alert('Preencha a descrição e um valor maior que zero!');
@@ -211,37 +227,53 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    // --- NOVA VERIFICAÇÃO DE DUPLICIDADE ---
-    // Procura no mês atual se já existe uma transação com o mesmo nome e valor exato
+    // --- VERIFICAÇÃO DE DUPLICIDADE (Agora mais inteligente) ---
     const transacaoDuplicada = this.transacoesDoMes.find(t => 
+      t.id !== this.editandoId && // Ignora a própria transação se estiver editando
       t.descricao.toLowerCase().trim() === this.novaTransacao.descricao.toLowerCase().trim() && 
       t.valor === this.novaTransacao.valor &&
       t.tipo === this.novaTransacao.tipo
     );
 
     if (transacaoDuplicada) {
-      const confirmar = confirm(`Atenção: Você já tem um lançamento de "${this.novaTransacao.descricao}" no valor de R$ ${this.novaTransacao.valor} neste mês.\n\nDeseja registrar novamente?`);
-      if (!confirmar) {
-        return; // O usuário cancelou, paramos por aqui
-      }
+      const confirmar = confirm(`Atenção: Você já tem um lançamento idêntico neste mês.\n\nDeseja registrar novamente?`);
+      if (!confirmar) return;
     }
 
-    // --- ESTADO DE SALVANDO (TRAVA O BOTÃO) ---
     this.salvando = true;
 
-    this.transacaoService.criarTransacao(this.novaTransacao).subscribe({
-      next: (resultado) => {
-        console.log('Salvo com sucesso no banco!', resultado);
-        this.novaTransacao = { descricao: '', valor: 0, tipo: 'despesa', categoria: '' };
-        this.carregarTransacoes();
-        this.salvando = false; // Libera o botão
-      },
-      error: (erro) => {
-        console.error('Erro ao salvar:', erro);
-        alert('Erro ao salvar no banco de dados.');
-        this.salvando = false; // Libera o botão em caso de erro
-      }
-    });
+    // --- FLUXO DE EDIÇÃO (PUT) ---
+    if (this.editandoId) {
+      this.transacaoService.atualizarTransacao(this.editandoId, this.novaTransacao).subscribe({
+        next: () => {
+          console.log('Atualizado com sucesso!');
+          this.cancelarEdicao(); // Limpa o formulário e sai do modo de edição
+          this.carregarTransacoes();
+          this.salvando = false;
+        },
+        error: (erro) => {
+          console.error('Erro ao atualizar:', erro);
+          alert('Erro ao atualizar no banco de dados.');
+          this.salvando = false;
+        }
+      });
+    } 
+    // --- FLUXO DE CRIAÇÃO (POST) ---
+    else {
+      this.transacaoService.criarTransacao(this.novaTransacao).subscribe({
+        next: () => {
+          console.log('Salvo com sucesso!');
+          this.cancelarEdicao(); // Reaproveitamos a função para limpar o form
+          this.carregarTransacoes();
+          this.salvando = false;
+        },
+        error: (erro) => {
+          console.error('Erro ao salvar:', erro);
+          alert('Erro ao salvar no banco de dados.');
+          this.salvando = false;
+        }
+      });
+    }
   }
 
   excluirTransacao(id?: number) {

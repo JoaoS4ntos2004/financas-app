@@ -47,7 +47,9 @@
 
     <div class="side-actions">
       <div class="card-white">
-        <h3 class="card-title">Novo Lançamento</h3>
+        <h3 class="card-title">
+          {{ editandoId ? '✏️ Editar Lançamento' : 'Novo Lançamento' }}
+        </h3>
         <div class="form-stack">
           <input type="text" class="modern-input" placeholder="Descrição do lançamento" [(ngModel)]="novaTransacao.descricao">
           
@@ -76,13 +78,21 @@
             </div>
           }
           
-          <button (click)="adicionarTransacao()" class="btn-primary" [disabled]="salvando || carregando">
-            @if (salvando) {
-              <span class="btn-spinner"></span> Salvando...
-            } @else {
-              Salvar Lançamento
+          <div class="form-row">
+            <button (click)="adicionarTransacao()" class="btn-primary" style="flex: 2;" [disabled]="salvando || carregando">
+              @if (salvando) {
+                <span class="btn-spinner"></span> Salvando...
+              } @else {
+                {{ editandoId ? 'Atualizar' : 'Salvar Lançamento' }}
+              }
+            </button>
+
+            @if (editandoId) {
+              <button (click)="cancelarEdicao()" class="btn-secondary" style="flex: 1;" [disabled]="salvando">
+                Cancelar
+              </button>
             }
-          </button>
+          </div>
         </div>
       </div>
 
@@ -122,17 +132,29 @@
             <span class="t-price" [class.txt-g]="t.tipo === 'receita'" [class.blurred]="privacyService.isFurtivo()">
               {{ t.valor | privacyCurrency }}
             </span>
-            <button (click)="excluirTransacao(t.id)" class="btn-icon" title="Excluir">
-              <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 6h18"></path>
-                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-              </svg>
-            </button>
+            
+            <div style="display: flex; gap: 5px;">
+              <button (click)="prepararEdicao(t)" class="btn-icon edit-btn" title="Editar">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+              
+              <button (click)="excluirTransacao(t.id)" class="btn-icon" title="Excluir">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18"></path>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+
           </div>
         </div>
       }
     </div>
+    
     @if (transacoesFiltradas.length > 0) {
       <div class="pagination-footer">
         <button (click)="paginaAnterior()" [disabled]="paginaAtual === 1" class="btn-page">

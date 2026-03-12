@@ -68,6 +68,11 @@ export class TransacaoService {
     return this.http.post<Transacao>(this.apiUrl, transacao);
   }
 
+  atualizarTransacao(id: number, transacao: Transacao): Observable<Transacao> {
+    this.limparCacheTransacoes(); // Suja o cache para forçar a busca dos dados novos
+    return this.http.put<Transacao>(`${this.apiUrl}/${id}`, transacao);
+  }
+
   deletarTransacao(id: number): Observable<any> {
     this.limparCacheTransacoes();
     return this.http.delete(`${this.apiUrl}/${id}`);

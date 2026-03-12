@@ -189,3 +189,11 @@ input[type="file"] { display: none; }
   font-size: 0.95rem;
   font-weight: 500;
 }
+
+.edit-btn {
+  color: #3b82f6; /* Azul corporativo */
+}
+.edit-btn:hover {
+  background: #eff6ff; 
+  color: #2563eb;
+}
