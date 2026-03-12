@@ -1,4 +1,5 @@
 import os
+import requests
 from datetime import datetime
 from typing import List
 from fastapi import FastAPI, Depends, HTTPException, File, UploadFile
@@ -17,6 +18,8 @@ from typing import List
 # --- CONFIGURAÇÃO DO BANCO ---
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
+PLUGGY_CLIENT_ID = os.getenv("PLUGGY_CLIENT_ID")
+PLUGGY_CLIENT_SECRET = os.getenv("PLUGGY_CLIENT_SECRET")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -92,6 +95,38 @@ def get_db():
         db.close()
 
 # --- ROTAS DA API ---
+@app.get("/pluggy/token")
+def obter_token_pluggy():
+    if not PLUGGY_CLIENT_ID or not PLUGGY_CLIENT_SECRET:
+        raise HTTPException(status_code=500, detail="Credenciais da Pluggy não configuradas no servidor.")
+
+    # 1. Fazemos o login na Pluggy para pegar a API Key fresca
+    auth_url = "https://api.pluggy.ai/auth"
+    payload = {
+        "clientId": PLUGGY_CLIENT_ID,
+        "clientSecret": PLUGGY_CLIENT_SECRET
+    }
+    
+    auth_response = requests.post(auth_url, json=payload)
+    if auth_response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Falha ao autenticar na Pluggy")
+        
+    api_key = auth_response.json().get("apiKey")
+
+    # 2. Com a API Key em mãos, pedimos o Connect Token para o Angular usar
+    token_url = "https://api.pluggy.ai/connect_token"
+    headers = {
+        "X-API-KEY": api_key,
+        "Content-Type": "application/json"
+    }
+    
+    token_response = requests.post(token_url, headers=headers)
+    if token_response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Falha ao gerar o Connect Token")
+
+    # Devolvemos o token limpo para o Frontend
+    return {"accessToken": token_response.json().get("accessToken")}
+
 @app.post("/transacoes/", response_model=TransacaoResponse)
 def criar_transacao(transacao: TransacaoCreate, db: Session = Depends(get_db)):
     if transacao.tipo not in ['receita', 'despesa']:

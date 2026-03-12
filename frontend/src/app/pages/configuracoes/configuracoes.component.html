@@ -2,7 +2,7 @@
   
   <div style="margin-bottom: 30px;">
     <h2 style="margin: 0; color: #1e293b; font-size: 1.8rem;">⚙️ Configurações</h2>
-    <p style="color: #64748b; margin: 5px 0 0 0;">Gerencie os limites do seu orçamento mensal.</p>
+    <p style="color: #64748b; margin: 5px 0 0 0;">Gerencie os limites do seu orçamento e integrações.</p>
   </div>
 
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
@@ -46,16 +46,32 @@
             
             <div style="display: flex; gap: 8px;">
                 <button (click)="editarMeta(orc)" style="padding: 6px 10px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; color: #64748b;">
-                    ✏️
+                  ✏️
                 </button>
                 <button (click)="excluirMeta(orc.categoria)" style="padding: 6px 10px; background: #fee2e2; border: 1px solid #fecaca; border-radius: 4px; cursor: pointer; color: #ef4444;">
-                    🗑️
+                  🗑️
                 </button>
             </div>
           </div>
         }
       </div>
-
     </div>
+
+    <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+      <h3 style="margin-top: 0; color: #334155;">Integração Bancária</h3>
+      <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5;">
+        Conecte sua conta do <strong>Banco Inter</strong> via Open Finance para importar todas as suas receitas e despesas automaticamente.
+      </p>
+      
+      <button (click)="vincularBanco()" [disabled]="carregandoPluggy"
+              style="width: 100%; padding: 12px; background-color: #10b981; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 8px;">
+        @if (carregandoPluggy) {
+          ⏳ Conectando...
+        } @else {
+          🏦 Vincular Conta
+        }
+      </button>
+    </div>
+
   </div>
 </div>
