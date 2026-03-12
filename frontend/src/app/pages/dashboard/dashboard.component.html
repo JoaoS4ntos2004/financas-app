@@ -76,7 +76,13 @@
             </div>
           }
           
-          <button (click)="adicionarTransacao()" class="btn-primary">Salvar Lançamento</button>
+          <button (click)="adicionarTransacao()" class="btn-primary" [disabled]="salvando || carregando">
+            @if (salvando) {
+              <span class="btn-spinner"></span> Salvando...
+            } @else {
+              Salvar Lançamento
+            }
+          </button>
         </div>
       </div>
 
@@ -127,5 +133,20 @@
         </div>
       }
     </div>
+    @if (transacoesFiltradas.length > 0) {
+      <div class="pagination-footer">
+        <button (click)="paginaAnterior()" [disabled]="paginaAtual === 1" class="btn-page">
+          &laquo; Anterior
+        </button>
+        <span class="page-info">Página {{ paginaAtual }} de {{ totalPaginas }}</span>
+        <button (click)="proximaPagina()" [disabled]="paginaAtual === totalPaginas" class="btn-page">
+          Próxima &raquo;
+        </button>
+      </div>
+    } @else {
+      <div class="empty-list">
+        Nenhum lançamento encontrado neste período.
+      </div>
+    }
   </section>
 </main>

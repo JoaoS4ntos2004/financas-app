@@ -19,6 +19,7 @@ export class DashboardComponent implements OnInit {
   public privacyService = inject(PrivacyService);
   private transacaoService = inject(TransacaoService);
   carregando: boolean = true;
+  salvando: boolean = false;
 
   // Variáveis do Dashboard
   totalReceitas: number = 0;
@@ -210,15 +211,35 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
+    // --- NOVA VERIFICAÇÃO DE DUPLICIDADE ---
+    // Procura no mês atual se já existe uma transação com o mesmo nome e valor exato
+    const transacaoDuplicada = this.transacoesDoMes.find(t => 
+      t.descricao.toLowerCase().trim() === this.novaTransacao.descricao.toLowerCase().trim() && 
+      t.valor === this.novaTransacao.valor &&
+      t.tipo === this.novaTransacao.tipo
+    );
+
+    if (transacaoDuplicada) {
+      const confirmar = confirm(`Atenção: Você já tem um lançamento de "${this.novaTransacao.descricao}" no valor de R$ ${this.novaTransacao.valor} neste mês.\n\nDeseja registrar novamente?`);
+      if (!confirmar) {
+        return; // O usuário cancelou, paramos por aqui
+      }
+    }
+
+    // --- ESTADO DE SALVANDO (TRAVA O BOTÃO) ---
+    this.salvando = true;
+
     this.transacaoService.criarTransacao(this.novaTransacao).subscribe({
       next: (resultado) => {
         console.log('Salvo com sucesso no banco!', resultado);
-        this.novaTransacao = { descricao: '', valor: 0, tipo: 'despesa',categoria: '' };
+        this.novaTransacao = { descricao: '', valor: 0, tipo: 'despesa', categoria: '' };
         this.carregarTransacoes();
+        this.salvando = false; // Libera o botão
       },
       error: (erro) => {
         console.error('Erro ao salvar:', erro);
         alert('Erro ao salvar no banco de dados.');
+        this.salvando = false; // Libera o botão em caso de erro
       }
     });
   }
