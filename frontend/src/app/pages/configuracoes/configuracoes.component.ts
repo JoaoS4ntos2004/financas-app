@@ -84,7 +84,7 @@ export class ConfiguracoesComponent implements OnInit {
     this.carregandoPluggy = true;
     
     // 1. Pede o Token temporário para o seu backend em Python
-    this.http.get<any>('http://127.0.0.1:8000/pluggy/token').subscribe({
+    this.http.get<any>('https://financas-app-niso.onrender.com/pluggy/token').subscribe({
       next: (resposta) => {
         this.carregandoPluggy = false;
         
