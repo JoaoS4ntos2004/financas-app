@@ -140,6 +140,36 @@ def deletar_transacao(transacao_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"mensagem": "Transação apagada com sucesso!"}
 
+@app.put("/transacoes/{transacao_id}", response_model=TransacaoResponse)
+def atualizar_transacao(transacao_id: int, transacao_atualizada: TransacaoCreate, db: Session = Depends(get_db)):
+    # 1. Busca a transação existente no banco pelo ID
+    db_transacao = db.query(Transacao).filter(Transacao.id == transacao_id).first()
+    
+    # 2. Se não existir, retorna erro 404
+    if not db_transacao:
+        raise HTTPException(status_code=404, detail="Transação não encontrada")
+    
+    # 3. Valida o tipo de lançamento
+    if transacao_atualizada.tipo not in ['receita', 'despesa']:
+        raise HTTPException(status_code=400, detail="Tipo deve ser 'receita' ou 'despesa'")
+        
+    # 4. LÓGICA INTELIGENTE (A mesma da criação):
+    categoria_final = transacao_atualizada.categoria
+    if categoria_final == "Outros" or not categoria_final:
+        categoria_final = classificar_categoria(transacao_atualizada.descricao, transacao_atualizada.valor, transacao_atualizada.tipo)
+
+    # 5. Atualiza os dados da transação com os novos valores que vieram do Angular
+    db_transacao.descricao = transacao_atualizada.descricao
+    db_transacao.valor = transacao_atualizada.valor
+    db_transacao.tipo = transacao_atualizada.tipo
+    db_transacao.categoria = categoria_final
+    
+    # 6. Salva as alterações no banco de dados
+    db.commit()
+    db.refresh(db_transacao)
+    
+    return db_transacao
+
 def classificar_categoria(descricao: str, valor: float, tipo: str) -> str:
     desc = descricao.upper() 
     
